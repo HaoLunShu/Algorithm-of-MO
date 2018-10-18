@@ -8,7 +8,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Algorithm of MO", "Algorith
 		{88B27C90-4C97-43D5-99D2-E1437DA8D154} = {88B27C90-4C97-43D5-99D2-E1437DA8D154}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JMetalCSharp", "..\..\JMetalCSharp.V05\JMetalCSharp\JMetalCSharp.csproj", "{88B27C90-4C97-43D5-99D2-E1437DA8D154}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JMetalCSharp", "JMetalCSharp\JMetalCSharp.csproj", "{88B27C90-4C97-43D5-99D2-E1437DA8D154}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

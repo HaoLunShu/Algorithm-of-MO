@@ -98,6 +98,9 @@ namespace Algorithm_of_MO
             parameters = null;
             selection = SelectionFactory.GetSelectionOperator("BinaryTournament2", parameters);
 
+            // Quality Indicators Operator
+            indicators = new QualityIndicator(problem, "ZDT1.pf");
+
             // Add the operators to the algorithm
             algorithm.AddOperator("crossover", crossover);
             algorithm.AddOperator("mutation", mutation);

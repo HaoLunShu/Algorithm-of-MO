@@ -40,7 +40,7 @@
   <ItemGroup>
     <Reference Include="JMetalCSharp, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\JMetalCSharp.V05\JMetalCSharp\bin\Debug\JMetalCSharp.dll</HintPath>
+      <HintPath>..\JMetalCSharp\bin\Debug\JMetalCSharp.dll</HintPath>
     </Reference>
     <Reference Include="log4net">
       <HintPath>..\..\..\JMetalCSharp.V05\JMetalCSharp\bin\Debug\log4net.dll</HintPath>
