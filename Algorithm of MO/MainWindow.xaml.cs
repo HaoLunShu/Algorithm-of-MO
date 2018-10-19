@@ -18,6 +18,7 @@ using JMetalCSharp.Operators.Crossover;
 using JMetalCSharp.Operators.Mutation;
 using JMetalCSharp.Operators.Selection;
 using JMetalCSharp.Problems;
+using JMetalCSharp.Problems.DTLZ;
 using JMetalCSharp.Problems.ZDT;
 using JMetalCSharp.QualityIndicator;
 using JMetalCSharp.Utils;
@@ -46,14 +47,6 @@ namespace Algorithm_of_MO
 
             QualityIndicator indicators; // Object to get quality indicators
 
-            // Logger object and file to store log messages
-            var logger = Logger.Log;
-
-            var appenders = logger.Logger.Repository.GetAppenders();
-            var fileAppender = appenders[0] as log4net.Appender.FileAppender;
-            fileAppender.File = "NSGAII.log";
-            fileAppender.ActivateOptions();
-
             indicators = null;
             // Default problem
               //problem = new Kursawe("Real", 3);
@@ -61,12 +54,12 @@ namespace Algorithm_of_MO
               //problem = new Water("Real");
                 problem = new ZDT1("ArrayReal", 30);
             //problem = new ConstrEx("Real");
-            //problem = new DTLZ1("Real");
+            //problem = new DTLZ2("Real", 10, 3);
             //problem = new OKA2("Real") ;
 
-            //algorithm = new JMetalCSharp.Metaheuristics.NSGAII.NSGAII(problem);
+            algorithm = new JMetalCSharp.Metaheuristics.NSGAII.NSGAII(problem);
             //algorithm = new ssNSGAII(problem);
-            algorithm = new JMetalCSharp.Metaheuristics.MOEAD.MOEAD(problem);
+            //algorithm = new JMetalCSharp.Metaheuristics.MOEAD.MOEAD(problem);
 
             // Algorithm parameters
             algorithm.SetInputParameter("populationSize", 100);
@@ -74,11 +67,11 @@ namespace Algorithm_of_MO
 
             algorithm.SetInputParameter("dataDirectory", "Data/Parameters/Weight");
 
-            algorithm.SetInputParameter("finalSize", 300); // used by MOEAD_DRA
+            //algorithm.SetInputParameter("finalSize", 300); // used by MOEAD_DRA
 
-            algorithm.SetInputParameter("T", 20);
-            algorithm.SetInputParameter("delta", 0.9);
-            algorithm.SetInputParameter("nr", 2);
+            //algorithm.SetInputParameter("T", 20);
+            //algorithm.SetInputParameter("delta", 0.9);
+            //algorithm.SetInputParameter("nr", 2);
 
             // Mutation and Crossover for Real codification 
             parameters = new Dictionary<string, object>();
@@ -109,30 +102,45 @@ namespace Algorithm_of_MO
             // Add the indicator object to the algorithm
             algorithm.SetInputParameter("indicators", indicators);
 
-            // Execute the Algorithm
-            long initTime = Environment.TickCount;
-            SolutionSet population = algorithm.Execute();
-            long estimatedTime = Environment.TickCount - initTime;
-
-            // Result messages 
-            logger.Info("Total execution time: " + estimatedTime + "ms");
-            logger.Info("Variables values have been writen to file VAR");
-            population.PrintVariablesToFile("VAR");
-            logger.Info("Objectives values have been writen to file FUN");
-            population.PrintObjectivesToFile("FUN");
-            Console.WriteLine("Time: " + estimatedTime);
-            Console.ReadLine();
-            if (indicators != null)
+            for (int i = 1; i <= 30; i++)
             {
-                logger.Info("Quality indicators");
-                logger.Info("Hypervolume: " + indicators.GetHypervolume(population));
-                logger.Info("GD         : " + indicators.GetGD(population));
-                logger.Info("IGD        : " + indicators.GetIGD(population));
-                logger.Info("Spread     : " + indicators.GetSpread(population));
-                logger.Info("Epsilon    : " + indicators.GetEpsilon(population));
 
-                int evaluations = (int)algorithm.GetOutputParameter("evaluations");
-                logger.Info("Speed      : " + evaluations + " evaluations");
+                // Logger object and file to store log messages
+                var logger = Logger.Log;
+
+                var appenders = logger.Logger.Repository.GetAppenders();
+                var fileAppender = appenders[0] as log4net.Appender.FileAppender;
+                fileAppender.File = "Result/NSGAII/ZDT1/NSGAII" + i +".log";
+                fileAppender.ActivateOptions();
+
+                string filevar = "Result/NSGAII/ZDT1/VAR" + i;
+                string filefun = "Result/NSGAII/ZDT1/FUN" + i;
+
+                // Execute the Algorithm
+                long initTime = Environment.TickCount;
+                SolutionSet population = algorithm.Execute();
+                long estimatedTime = Environment.TickCount - initTime;
+
+                // Result messages 
+                logger.Info("Total execution time: " + estimatedTime + "ms");
+                logger.Info("Variables values have been writen to file " + filevar);
+                population.PrintVariablesToFile(filevar);
+                logger.Info("Objectives values have been writen to file " + filefun);
+                population.PrintObjectivesToFile(filefun);
+                Console.WriteLine("Time: " + estimatedTime);
+                Console.ReadLine();
+                if (indicators != null)
+                {
+                    logger.Info("Quality indicators");
+                    logger.Info("Hypervolume: " + indicators.GetHypervolume(population));
+                    logger.Info("GD         : " + indicators.GetGD(population));
+                    logger.Info("IGD        : " + indicators.GetIGD(population));
+                    logger.Info("Spread     : " + indicators.GetSpread(population));
+                    logger.Info("Epsilon    : " + indicators.GetEpsilon(population));
+
+                    int evaluations = (int)algorithm.GetOutputParameter("evaluations");
+                    logger.Info("Speed      : " + evaluations + " evaluations");
+                }
             }
         }
 
