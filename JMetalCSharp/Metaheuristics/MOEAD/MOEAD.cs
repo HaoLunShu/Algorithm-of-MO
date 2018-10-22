@@ -217,27 +217,31 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
                             Solution child;
                             mutation.Execute(offSpring[0]);
                             mutation.Execute(offSpring[1]);
-                            if(rnd < 0.5)
+                            /*if(rnd < 0.5)
                             {
                                 child = offSpring[0];
                             }
                             else
                             {
                                 child = offSpring[1];
-                            }
-                            Problem.Evaluate(child);
-                            Problem.EvaluateConstraints(child);
+                            }*/
+                            Problem.Evaluate(offSpring[0]);
+                            Problem.Evaluate(offSpring[1]);
+                            Problem.EvaluateConstraints(offSpring[0]);
+                            Problem.EvaluateConstraints(offSpring[1]);
                             offspringPopulation.Add(offSpring[0]);
                             offspringPopulation.Add(offSpring[1]);
-                            evaluations++;
+                            evaluations += 2;
                             
                             // STEP 2.3. Repair. Not necessary
 
                             // STEP 2.4. Update z_
-                            UpdateReference(child);
+                            UpdateReference(offSpring[0]);
+                            UpdateReference(offSpring[1]);
 
                             // STEP 2.5. Update of solutions
-                            UpdateProblem(child, n, type);
+                            UpdateProblem(offSpring[0], n, type);
+                            UpdateProblem(offSpring[1], n, type);
                         }
                     }
                 }
