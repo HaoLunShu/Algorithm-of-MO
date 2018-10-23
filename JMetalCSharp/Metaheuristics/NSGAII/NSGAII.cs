@@ -37,7 +37,9 @@ namespace JMetalCSharp.Metaheuristics.NSGAII
 		{
 			int populationSize = -1;
 			int maxEvaluations = -1;
+            int iterationsNumber = -1;
 			int evaluations;
+            int iteration;
 
 			QualityIndicator.QualityIndicator indicators = null; // QualityIndicator object
 			int requiredEvaluations; // Use in the example of use of the
@@ -56,11 +58,13 @@ namespace JMetalCSharp.Metaheuristics.NSGAII
 			//Read the parameters
 			JMetalCSharp.Utils.Utils.GetIntValueFromParameter(this.InputParameters, "maxEvaluations", ref maxEvaluations);
 			JMetalCSharp.Utils.Utils.GetIntValueFromParameter(this.InputParameters, "populationSize", ref populationSize);
-			JMetalCSharp.Utils.Utils.GetIndicatorsFromParameters(this.InputParameters, "indicators", ref indicators);
+            JMetalCSharp.Utils.Utils.GetIntValueFromParameter(this.InputParameters, "iterationsNumber", ref iterationsNumber);
+            JMetalCSharp.Utils.Utils.GetIndicatorsFromParameters(this.InputParameters, "indicators", ref indicators);
 
 			//Initialize the variables
 			population = new SolutionSet(populationSize);
 			evaluations = 0;
+            iteration = 0;
 
 			requiredEvaluations = 0;
 
@@ -84,7 +88,7 @@ namespace JMetalCSharp.Metaheuristics.NSGAII
 			}
 
 			// Generations 
-			while (evaluations < maxEvaluations)
+			while (iteration < iterationsNumber)
 			{
 
 				// Create the offSpring solutionSet      
@@ -92,7 +96,7 @@ namespace JMetalCSharp.Metaheuristics.NSGAII
 				Solution[] parents = new Solution[2];
 				for (int i = 0; i < (populationSize / 2); i++)
 				{
-					if (evaluations < maxEvaluations)
+					if (iteration < iterationsNumber)
 					{
 						//obtain parents
 						parents[0] = (Solution)selectionOperator.Execute(population);
@@ -158,6 +162,8 @@ namespace JMetalCSharp.Metaheuristics.NSGAII
 					remain = 0;
 				}
 
+                iteration++;
+
 				// This piece of code shows how to use the indicator object into the code
 				// of NSGA-II. In particular, it finds the number of evaluations required
 				// by the algorithm to obtain a Pareto front with a hypervolume higher
@@ -172,8 +178,11 @@ namespace JMetalCSharp.Metaheuristics.NSGAII
 				}
 			}
 
-			// Return as output parameter the required evaluations
-			SetOutputParameter("evaluations", requiredEvaluations);
+            Logger.Log.Info("ITERATION: " + iteration);
+            Console.WriteLine("ITERATION: " + iteration);
+
+            // Return as output parameter the required evaluations
+            SetOutputParameter("evaluations", requiredEvaluations);
 
 			// Return the first non-dominated front
 			Ranking rank = new Ranking(population);

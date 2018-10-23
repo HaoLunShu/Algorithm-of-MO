@@ -53,6 +53,9 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
 
 		private int evaluations;
 
+        private int iterationsNumber;
+        private int iteration;
+
 		private Operator crossover;
 		private Operator mutation;
 
@@ -83,9 +86,12 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
 
 			evaluations = 0;
 
+            iteration = 0;
+
 			JMetalCSharp.Utils.Utils.GetIntValueFromParameter(this.InputParameters, "maxEvaluations", ref maxEvaluations);
 			JMetalCSharp.Utils.Utils.GetIntValueFromParameter(this.InputParameters, "populationSize", ref populationSize);
-			JMetalCSharp.Utils.Utils.GetStringValueFromParameter(this.InputParameters, "dataDirectory", ref dataDirectory);
+            JMetalCSharp.Utils.Utils.GetIntValueFromParameter(this.InputParameters, "iterationsNumber", ref iterationsNumber);
+            JMetalCSharp.Utils.Utils.GetStringValueFromParameter(this.InputParameters, "dataDirectory", ref dataDirectory);
             JMetalCSharp.Utils.Utils.GetIndicatorsFromParameters(this.InputParameters, "indicators", ref indicators);
 
             Logger.Log.Info("POPSIZE: " + populationSize);
@@ -210,11 +216,11 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
                         parents[0] = population.Get(p[0]);
                         parents[1] = population.Get(p[1]);
 
-                        if (evaluations < maxEvaluations)
+                        if (iteration < 250)
                         {
                             //obtain parents
                             Solution[] offSpring = (Solution[])crossover.Execute(parents);
-                            Solution child;
+                            //Solution child;
                             mutation.Execute(offSpring[0]);
                             mutation.Execute(offSpring[1]);
                             /*if(rnd < 0.5)
@@ -246,6 +252,8 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
                     }
                 }
 
+                iteration++;
+
                 if ((indicators != null) && (requiredEvaluations == 0))
                 {
                     double HV = indicators.GetHypervolume(population);
@@ -255,7 +263,10 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
                     }
                 }
 
-            } while (evaluations < maxEvaluations);
+            } while (iteration < iterationsNumber);
+
+            Logger.Log.Info("ITERATION: " + iteration);
+            Console.WriteLine("ITERATION: " + iteration);
 
             // Return as output parameter the required evaluations
             SetOutputParameter("evaluations", requiredEvaluations);
