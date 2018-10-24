@@ -194,7 +194,7 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
                     // Create the offSpring solutionSet      
                     SolutionSet offspringPopulation = new SolutionSet(populationSize);
                     Solution[] parents = new Solution[2];
-                    for (int i = 0; i < populationSize; i++)
+                    for (int i = 0; i < (populationSize/2); i++)
                     {
                         int n = permutation[i]; // or int n = i;
 
@@ -216,7 +216,7 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
                         parents[0] = population.Get(p[0]);
                         parents[1] = population.Get(p[1]);
 
-                        if (iteration < 250)
+                        if (iteration < iterationsNumber && evaluations <= maxEvaluations)
                         {
                             //obtain parents
                             Solution[] offSpring = (Solution[])crossover.Execute(parents);
@@ -263,7 +263,7 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
                     }
                 }
 
-            } while (iteration < iterationsNumber);
+            } while (iteration < iterationsNumber && evaluations <= maxEvaluations);
 
             Logger.Log.Info("ITERATION: " + iteration);
             Console.WriteLine("ITERATION: " + iteration);

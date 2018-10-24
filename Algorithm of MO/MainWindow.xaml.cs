@@ -52,9 +52,9 @@ namespace Algorithm_of_MO
               //problem = new Kursawe("Real", 3);
               //problem = new Kursawe("BinaryReal", 3);
               //problem = new Water("Real");
-                problem = new ZDT1("ArrayReal", 30);
+                //problem = new ZDT6("ArrayReal", 10);
             //problem = new ConstrEx("Real");
-            //problem = new DTLZ2("Real", 10, 3);
+            problem = new DTLZ2("Real", 10, 3);
             //problem = new OKA2("Real") ;
 
             algorithm = new JMetalCSharp.Metaheuristics.NSGAII.NSGAII(problem);
@@ -63,16 +63,16 @@ namespace Algorithm_of_MO
 
             // Algorithm parameters
             algorithm.SetInputParameter("populationSize", 100);
-            algorithm.SetInputParameter("maxEvaluations", 25000);
+            algorithm.SetInputParameter("maxEvaluations", 30000);
             algorithm.SetInputParameter("iterationsNumber", 250);
 
             algorithm.SetInputParameter("dataDirectory", "Data/Parameters/Weight");
 
             //algorithm.SetInputParameter("finalSize", 300); // used by MOEAD_DRA
 
-            //algorithm.SetInputParameter("T", 20);
-            //algorithm.SetInputParameter("delta", 0.9);
-            //algorithm.SetInputParameter("nr", 2);
+            algorithm.SetInputParameter("T", 20);
+            algorithm.SetInputParameter("delta", 0.9);
+            algorithm.SetInputParameter("nr", 2);
 
             // Mutation and Crossover for Real codification 
             parameters = new Dictionary<string, object>();
@@ -93,7 +93,7 @@ namespace Algorithm_of_MO
             selection = SelectionFactory.GetSelectionOperator("BinaryTournament2", parameters);
 
             // Quality Indicators Operator
-            indicators = new QualityIndicator(problem, "ZDT1.pf");
+            indicators = new QualityIndicator(problem, "DTLZ2.3D.pf");
 
             // Add the operators to the algorithm
             algorithm.AddOperator("crossover", crossover);
@@ -111,11 +111,11 @@ namespace Algorithm_of_MO
 
                 var appenders = logger.Logger.Repository.GetAppenders();
                 var fileAppender = appenders[0] as log4net.Appender.FileAppender;
-                fileAppender.File = "Result/NSGAII/ZDT1/NSGAII" + i +".log";
+                fileAppender.File = "Result/NSGAII/DTLZ2_3D/NSGAII" + i +".log";
                 fileAppender.ActivateOptions();
 
-                string filevar = "Result/NSGAII/ZDT1/VAR" + i;
-                string filefun = "Result/NSGAII/ZDT1/FUN" + i;
+                string filevar = "Result/NSGAII/DTLZ2_3D/VAR" + i;
+                string filefun = "Result/NSGAII/DTLZ2_3D/FUN" + i;
 
                 // Execute the Algorithm
                 long initTime = Environment.TickCount;

@@ -88,7 +88,7 @@ namespace JMetalCSharp.Metaheuristics.NSGAII
 			}
 
 			// Generations 
-			while (iteration < iterationsNumber)
+			while (iteration < iterationsNumber && evaluations <= maxEvaluations)
 			{
 
 				// Create the offSpring solutionSet      
@@ -96,7 +96,7 @@ namespace JMetalCSharp.Metaheuristics.NSGAII
 				Solution[] parents = new Solution[2];
 				for (int i = 0; i < (populationSize / 2); i++)
 				{
-					if (iteration < iterationsNumber)
+					if (iteration < iterationsNumber && evaluations <= maxEvaluations)
 					{
 						//obtain parents
 						parents[0] = (Solution)selectionOperator.Execute(population);
