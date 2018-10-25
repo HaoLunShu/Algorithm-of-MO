@@ -73,7 +73,7 @@ namespace JMetalCSharp.Metaheuristics.NSGAII
 			crossoverOperator = Operators["crossover"];
 			selectionOperator = Operators["selection"];
 
-			Random random = new Random(2);
+			Random random = new Random();
 			JMetalRandom.SetRandom(random);
 
 			// Create the initial solutionSet
