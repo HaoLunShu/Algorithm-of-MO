@@ -216,7 +216,7 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
                         parents[0] = population.Get(p[0]);
                         parents[1] = population.Get(p[1]);
 
-                        if (iteration < iterationsNumber && evaluations <= maxEvaluations)
+                        if (iteration < iterationsNumber)
                         {
                             //obtain parents
                             Solution[] offSpring = (Solution[])crossover.Execute(parents);
@@ -263,7 +263,7 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
                     }
                 }
 
-            } while (iteration < iterationsNumber && evaluations <= maxEvaluations);
+            } while (iteration < iterationsNumber);
 
             Logger.Log.Info("ITERATION: " + iteration);
             Console.WriteLine("ITERATION: " + iteration);

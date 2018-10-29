@@ -47,19 +47,40 @@ namespace Algorithm_of_MO
 
             QualityIndicator indicators; // Object to get quality indicators
 
+            string line;
+
+            // Read the file and display it line by line.  
+            System.IO.StreamReader file =
+                new System.IO.StreamReader(@"Data\Parameters\setting.txt");
+            while ((line = file.ReadLine()) != null)
+            {
+                bool b1 = line.Contains("problem");
+                bool b2 = line.Contains("solutionType");
+                bool b3 = line.Contains("numberOfVariables");
+                bool b4 = line.Contains("problem");
+                bool b5 = line.Contains("problem");
+                bool b6 = line.Contains("problem");
+                bool b7 = line.Contains("problem");
+                bool b8 = line.Contains("problem");
+                bool b9 = line.Contains("problem");
+                bool b10 = line.Contains("problem");
+            }
+
+            file.Close();
+
             indicators = null;
             // Default problem
               //problem = new Kursawe("Real", 3);
               //problem = new Kursawe("BinaryReal", 3);
               //problem = new Water("Real");
-                problem = new ZDT1("ArrayReal", 30);
+                problem = new ZDT2("ArrayReal", 30);
             //problem = new ConstrEx("Real");
-            //problem = new DTLZ2("Real", 10, 3);
+            //problem = new DTLZ1("Real", 10, 3);
             //problem = new OKA2("Real") ;
 
-            algorithm = new JMetalCSharp.Metaheuristics.NSGAII.NSGAII(problem);
+            //algorithm = new JMetalCSharp.Metaheuristics.NSGAII.NSGAII(problem);
             //algorithm = new ssNSGAII(problem);
-            //algorithm = new JMetalCSharp.Metaheuristics.MOEAD.MOEAD(problem);
+            algorithm = new JMetalCSharp.Metaheuristics.MOEAD.MOEAD(problem);
 
             // Algorithm parameters
             algorithm.SetInputParameter("populationSize", 100);
@@ -70,9 +91,9 @@ namespace Algorithm_of_MO
 
             //algorithm.SetInputParameter("finalSize", 300); // used by MOEAD_DRA
 
-            //algorithm.SetInputParameter("T", 20);
-            //algorithm.SetInputParameter("delta", 0.9);
-            //algorithm.SetInputParameter("nr", 2);
+            algorithm.SetInputParameter("T", 20);
+            algorithm.SetInputParameter("delta", 0.9);
+            algorithm.SetInputParameter("nr", 2);
 
             // Mutation and Crossover for Real codification 
             parameters = new Dictionary<string, object>();
@@ -93,8 +114,8 @@ namespace Algorithm_of_MO
             selection = SelectionFactory.GetSelectionOperator("BinaryTournament2", parameters);
 
             // Quality Indicators Operator
-            //indicators = new QualityIndicator(problem, "DTLZ2.3D.pf");
-            indicators = new QualityIndicator(problem, "ZDT1.pf");
+            //indicators = new QualityIndicator(problem, "DTLZ1.3D.pf");
+            indicators = new QualityIndicator(problem, "ZDT2.pf");
 
             // Add the operators to the algorithm
             algorithm.AddOperator("crossover", crossover);
@@ -112,11 +133,11 @@ namespace Algorithm_of_MO
 
                 var appenders = logger.Logger.Repository.GetAppenders();
                 var fileAppender = appenders[0] as log4net.Appender.FileAppender;
-                fileAppender.File = "Result/NSGAII/ZDT1/NSGAII" + i +".log";
+                fileAppender.File = "Result/MOEAD/ZDT2/MOEAD" + i +".log";
                 fileAppender.ActivateOptions();
 
-                string filevar = "Result/NSGAII/ZDT1/VAR" + i;
-                string filefun = "Result/NSGAII/ZDT1/FUN" + i;
+                string filevar = "Result/MOEAD/ZDT2/VAR" + i;
+                string filefun = "Result/MOEAD/ZDT2/FUN" + i;
 
                 // Execute the Algorithm
                 long initTime = Environment.TickCount;
