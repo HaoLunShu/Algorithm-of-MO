@@ -49,21 +49,20 @@ namespace Algorithm_of_MO
 
             string line;
 
+            string[] s = { "problem", "solutionType", "numberOfVariables", "numberOfObjectives", "algorithm", "populationSize", "maxEvaluations", "iterationsNumber", "dataDirectory", 
+                    "finalSize", "T", "delta", "nr", "refSet1Size", "refSet2Size", "archiveSize", "feedback", "numberOfThreads", "biSection", "swarmSize", "offset", "Crossover", "probabilityOfCrossover",
+                "distributionIndexOfCrossover", "alpha", "CR", "F", "K", "DEVariant", "Mutation", "probabilityOfMutation", "distributionIndexOfMutation", "perturbation", "Selection", "QualityIndicator" };
+
             // Read the file and display it line by line.  
             System.IO.StreamReader file =
-                new System.IO.StreamReader(@"Data\Parameters\setting.txt");
+                new System.IO.StreamReader("Data/Parameters/setting.txt");
             while ((line = file.ReadLine()) != null)
             {
-                bool b1 = line.Contains("problem");
-                bool b2 = line.Contains("solutionType");
-                bool b3 = line.Contains("numberOfVariables");
-                bool b4 = line.Contains("problem");
-                bool b5 = line.Contains("problem");
-                bool b6 = line.Contains("problem");
-                bool b7 = line.Contains("problem");
-                bool b8 = line.Contains("problem");
-                bool b9 = line.Contains("problem");
-                bool b10 = line.Contains("problem");
+                bool[] b = { false };
+                for(int i = 0; i < s.Length; i++)
+                {
+                    b[i] = line.Contains(s[i]);
+                }
             }
 
             file.Close();
@@ -167,9 +166,53 @@ namespace Algorithm_of_MO
             }
         }
 
+        public void calculateStatistics(string filepath, string algorithm, int numbers)
+        {
+            string p = filepath + "/" + algorithm;
+            for(int i = 0; i < numbers; i++)
+            {
+                string line;
+                System.IO.StreamReader file = new System.IO.StreamReader(p + i + ".txt");
+                while ((line = file.ReadLine()) != null)
+                {
+                    bool bt = line.Contains("time");
+                    if(bt)
+                    {
+                        int indextime = line.LastIndexOf("time");
+                        if(indextime >= 0)
+                        {
+                            string time = line.Substring(indextime + 6, 4);
+                        }
+                    }
+
+                    bool[] b = { false };
+                    string[] s = { "Hypervolume", "GD", "IGD", "Spread" , "Epsilon", "Speed" };
+                    string[] d = { "" };
+                    for(int j = 0; j < s.Length; j++)
+                    {
+                        b[j] = line.Contains(s[j]);
+                        if(b[j])
+                        {
+                            int index = line.LastIndexOf(s[j]);
+                            if(index >= 0)
+                            {
+                                d[j] = line.Substring(index + 13, 20);
+                            }
+                        }
+                    }
+                }
+            }
+            
+        }
+
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             MyAlgorithm();
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
