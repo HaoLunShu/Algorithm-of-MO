@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -46,26 +47,6 @@ namespace Algorithm_of_MO
             Dictionary<string, object> parameters; // Operator parameters
 
             QualityIndicator indicators; // Object to get quality indicators
-
-            string line;
-
-            string[] s = { "problem", "solutionType", "numberOfVariables", "numberOfObjectives", "algorithm", "populationSize", "maxEvaluations", "iterationsNumber", "dataDirectory", 
-                    "finalSize", "T", "delta", "nr", "refSet1Size", "refSet2Size", "archiveSize", "feedback", "numberOfThreads", "biSection", "swarmSize", "offset", "Crossover", "probabilityOfCrossover",
-                "distributionIndexOfCrossover", "alpha", "CR", "F", "K", "DEVariant", "Mutation", "probabilityOfMutation", "distributionIndexOfMutation", "perturbation", "Selection", "QualityIndicator" };
-
-            // Read the file and display it line by line.  
-            System.IO.StreamReader file =
-                new System.IO.StreamReader("Data/Parameters/setting.txt");
-            while ((line = file.ReadLine()) != null)
-            {
-                bool[] b = { false };
-                for(int i = 0; i < s.Length; i++)
-                {
-                    b[i] = line.Contains(s[i]);
-                }
-            }
-
-            file.Close();
 
             indicators = null;
             // Default problem
@@ -129,6 +110,8 @@ namespace Algorithm_of_MO
 
                 // Logger object and file to store log messages
                 var logger = Logger.Log;
+                FileStream file = new FileStream("Result/MOEAD/ZDT2/MOEADnew" + i + ".txt", FileMode.OpenOrCreate, FileAccess.ReadWrite);
+                StreamWriter newlogger = new StreamWriter(file);
 
                 var appenders = logger.Logger.Repository.GetAppenders();
                 var fileAppender = appenders[0] as log4net.Appender.FileAppender;
@@ -146,10 +129,13 @@ namespace Algorithm_of_MO
                 // Result messages 
                 logger.Info("Total execution time: " + estimatedTime + "ms");
                 logger.Info("Variables values have been writen to file " + filevar);
+                newlogger.WriteLine("Total execution time: " + estimatedTime + "ms" + "\n");
+                newlogger.WriteLine("Variables values have been writen to file " + filevar + "\n");
                 population.PrintVariablesToFile(filevar);
                 logger.Info("Objectives values have been writen to file " + filefun);
                 population.PrintObjectivesToFile(filefun);
                 Console.WriteLine("Time: " + estimatedTime);
+                newlogger.WriteLine("Time: " + estimatedTime + "\n");
                 Console.ReadLine();
                 if (indicators != null)
                 {
@@ -160,49 +146,88 @@ namespace Algorithm_of_MO
                     logger.Info("Spread     : " + indicators.GetSpread(population));
                     logger.Info("Epsilon    : " + indicators.GetEpsilon(population));
 
+                    newlogger.WriteLine("Quality indicators");
+                    newlogger.WriteLine("Hypervolume: " + indicators.GetHypervolume(population) + "\n");
+                    newlogger.WriteLine("GD         : " + indicators.GetGD(population) + "\n");
+                    newlogger.WriteLine("IGD        : " + indicators.GetIGD(population) + "\n");
+                    newlogger.WriteLine("Spread     : " + indicators.GetSpread(population) + "\n");
+                    newlogger.WriteLine("Epsilon    : " + indicators.GetEpsilon(population) + "\n");
+
                     int evaluations = (int)algorithm.GetOutputParameter("evaluations");
-                    logger.Info("Speed      : " + evaluations + " evaluations");
+                    logger.Info("Speed      : " + evaluations + "     evaluations");
+                    newlogger.WriteLine("Speed      : " + evaluations + "     evaluations" + "\n");
                 }
+                newlogger.Close();
+                file.Close();
             }
         }
 
         public void calculateStatistics(string filepath, string algorithm, int numbers)
         {
-            string p = filepath + "/" + algorithm;
-            for(int i = 0; i < numbers; i++)
+            string p = filepath + "/" + algorithm + "new";
+            string[] s = { "Time", "Hypervolume", "GD", "IGD", "Spread" , "Epsilon", "Speed" };
+            double[] allParameters = new double[s.Length];
+            for(int i = 1; i <= numbers; i++)
             {
-                string line;
-                System.IO.StreamReader file = new System.IO.StreamReader(p + i + ".txt");
-                while ((line = file.ReadLine()) != null)
+                System.IO.StreamReader sr = new System.IO.StreamReader(p + i + ".txt");
+                string text;
+                while ((text = sr.ReadLine()) != null)
                 {
-                    bool bt = line.Contains("time");
-                    if(bt)
+                    bool bt = text.Contains(s[0]);
+                    if (bt)
                     {
-                        int indextime = line.LastIndexOf("time");
-                        if(indextime >= 0)
+                        int indextime = text.LastIndexOf(s[0]);
+                        if (indextime >= 0)
                         {
-                            string time = line.Substring(indextime + 6, 4);
+                            string time = text.Substring(indextime + 6, 4);
+                            int t = Int32.Parse(time);
+                            allParameters[0] = allParameters[0] + t;
                         }
                     }
 
-                    bool[] b = { false };
-                    string[] s = { "Hypervolume", "GD", "IGD", "Spread" , "Epsilon", "Speed" };
-                    string[] d = { "" };
-                    for(int j = 0; j < s.Length; j++)
+                    bool[] b = new bool[s.Length];
+                    string[] d = new string[s.Length];
+                    double[] para = new double[s.Length];
+                    for (int j = 1; j < s.Length - 1; j++)
                     {
-                        b[j] = line.Contains(s[j]);
-                        if(b[j])
+                        b[j] = text.Contains(s[j]);
+                        if (b[j])
                         {
-                            int index = line.LastIndexOf(s[j]);
-                            if(index >= 0)
+                            int index = text.LastIndexOf(s[j]);
+                            if (index >= 0)
                             {
-                                d[j] = line.Substring(index + 13, 20);
+                                d[j] = text.Substring(index + 13);
+                                para[j] = double.Parse(d[j]);
+                                allParameters[j] = allParameters[j] + para[j];
                             }
                         }
                     }
+
+                    bool bs = text.Contains(s[6]);
+                    if (bs)
+                    {
+                        int indexspeed = text.LastIndexOf(s[6]);
+                        if (indexspeed >= 0)
+                        {
+                            string speed = text.Substring(indexspeed + 13, 5);
+                            int sp = Int32.Parse(speed);
+                            allParameters[6] = allParameters[6] + sp;
+                        }
+                    }
                 }
+
             }
             
+            for(int k = 0; k < allParameters.Length; k++)
+            {
+                Console.WriteLine("Average " + s[k] + ": " + allParameters[k] / numbers);
+            }
+
+        }
+
+        private void SD(double average, int n)
+        {
+
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -212,7 +237,7 @@ namespace Algorithm_of_MO
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-
+            calculateStatistics("Result/MOEAD/ZDT2", "MOEAD", 30);
         }
     }
 }
