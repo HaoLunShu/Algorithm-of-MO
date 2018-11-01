@@ -53,7 +53,7 @@ namespace Algorithm_of_MO
               //problem = new Kursawe("Real", 3);
               //problem = new Kursawe("BinaryReal", 3);
               //problem = new Water("Real");
-                problem = new ZDT2("ArrayReal", 30);
+                problem = new ZDT3("ArrayReal", 30);
             //problem = new ConstrEx("Real");
             //problem = new DTLZ1("Real", 10, 3);
             //problem = new OKA2("Real") ;
@@ -95,7 +95,7 @@ namespace Algorithm_of_MO
 
             // Quality Indicators Operator
             //indicators = new QualityIndicator(problem, "DTLZ1.3D.pf");
-            indicators = new QualityIndicator(problem, "ZDT2.pf");
+            indicators = new QualityIndicator(problem, "ZDT3.pf");
 
             // Add the operators to the algorithm
             algorithm.AddOperator("crossover", crossover);
@@ -110,16 +110,16 @@ namespace Algorithm_of_MO
 
                 // Logger object and file to store log messages
                 var logger = Logger.Log;
-                FileStream file = new FileStream("Result/MOEAD/ZDT2/MOEADnew" + i + ".txt", FileMode.OpenOrCreate, FileAccess.ReadWrite);
+                FileStream file = new FileStream("Result/MOEAD/ZDT3/MOEADnew" + i + ".txt", FileMode.OpenOrCreate, FileAccess.ReadWrite);
                 StreamWriter newlogger = new StreamWriter(file);
 
                 var appenders = logger.Logger.Repository.GetAppenders();
                 var fileAppender = appenders[0] as log4net.Appender.FileAppender;
-                fileAppender.File = "Result/MOEAD/ZDT2/MOEAD" + i +".log";
+                fileAppender.File = "Result/MOEAD/ZDT3/MOEAD" + i +".log";
                 fileAppender.ActivateOptions();
 
-                string filevar = "Result/MOEAD/ZDT2/VAR" + i;
-                string filefun = "Result/MOEAD/ZDT2/FUN" + i;
+                string filevar = "Result/MOEAD/ZDT3/VAR" + i;
+                string filefun = "Result/MOEAD/ZDT3/FUN" + i;
 
                 // Execute the Algorithm
                 long initTime = Environment.TickCount;
@@ -167,12 +167,16 @@ namespace Algorithm_of_MO
             string p = filepath + "/" + algorithm + "new";
             string[] s = { "Time", "Hypervolume", "GD", "IGD", "Spread" , "Epsilon", "Speed" };
             double[] allParameters = new double[s.Length];
+            int[] T = new int[numbers];
+            double[,] QI = new double[s.Length, numbers];
+            int[] spe = new int[numbers];
             for(int i = 1; i <= numbers; i++)
             {
                 System.IO.StreamReader sr = new System.IO.StreamReader(p + i + ".txt");
                 string text;
                 while ((text = sr.ReadLine()) != null)
                 {
+                    int flag = 0;
                     bool bt = text.Contains(s[0]);
                     if (bt)
                     {
@@ -181,6 +185,7 @@ namespace Algorithm_of_MO
                         {
                             string time = text.Substring(indextime + 6, 4);
                             int t = Int32.Parse(time);
+                            T[flag] = t;
                             allParameters[0] = allParameters[0] + t;
                         }
                     }
@@ -198,6 +203,7 @@ namespace Algorithm_of_MO
                             {
                                 d[j] = text.Substring(index + 13);
                                 para[j] = double.Parse(d[j]);
+                                QI[j-1, flag] = para[j];
                                 allParameters[j] = allParameters[j] + para[j];
                             }
                         }
@@ -211,9 +217,12 @@ namespace Algorithm_of_MO
                         {
                             string speed = text.Substring(indexspeed + 13, 5);
                             int sp = Int32.Parse(speed);
+                            spe[flag] = sp;
                             allParameters[6] = allParameters[6] + sp;
                         }
                     }
+
+                    flag++;
                 }
 
             }
@@ -221,6 +230,7 @@ namespace Algorithm_of_MO
             for(int k = 0; k < allParameters.Length; k++)
             {
                 Console.WriteLine("Average " + s[k] + ": " + allParameters[k] / numbers);
+                File.AppendAllText("Result/MOEAD/ZDT3/finalQI" + ".txt", "Average " + s[k] + ": " + allParameters[k] / numbers + "\n");
             }
 
         }
@@ -230,6 +240,16 @@ namespace Algorithm_of_MO
 
         }
 
+        private void median(int[] Time, double[,] Q, int[] SP)
+        {
+            Array.Sort(Time);
+            Array.Sort(Q);
+            for(int l = 0; l < Time.Length; l++)
+            {
+                Array.Sort(Q);
+            }
+        }
+
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             MyAlgorithm();
@@ -237,7 +257,7 @@ namespace Algorithm_of_MO
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            calculateStatistics("Result/MOEAD/ZDT2", "MOEAD", 30);
+            calculateStatistics("Result/MOEAD/ZDT3", "MOEAD", 30);
         }
     }
 }

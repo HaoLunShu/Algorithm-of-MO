@@ -74,7 +74,7 @@ namespace JMetalCSharp.QualityIndicator
 					minimumValue);
 
 			// STEP 3. Sum the distances between each point of the true Pareto front and
-			// the nearest point in the true Pareto front
+			// the nearest point in the front
 			double sum = 0.0;
 			foreach (double[] aNormalizedParetoFront in normalizedParetoFront)
 			{
