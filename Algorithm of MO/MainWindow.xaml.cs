@@ -54,8 +54,8 @@ namespace Algorithm_of_MO
             //problem = new Kursawe("Real", 3);
             //problem = new Kursawe("BinaryReal", 3);
             //problem = new Water("Real");
-            //problem = new ZDT3("ArrayReal", 30);
-            problem = new LZ09_F1("Real");
+            problem = new ZDT3("ArrayReal", 30);
+            //problem = new LZ09_F1("Real");
             //problem = new ConstrEx("Real");
             //problem = new DTLZ1("Real", 10, 3);
             //problem = new OKA2("Real") ;
@@ -65,7 +65,7 @@ namespace Algorithm_of_MO
             algorithm = new JMetalCSharp.Metaheuristics.MOEAD.MOEAD(problem);
 
             // Algorithm parameters
-            algorithm.SetInputParameter("populationSize", 101);
+            algorithm.SetInputParameter("populationSize", 100);
             algorithm.SetInputParameter("maxEvaluations", 30000);
             algorithm.SetInputParameter("iterationsNumber", 250);
 
@@ -79,13 +79,13 @@ namespace Algorithm_of_MO
 
             // Mutation and Crossover for Real codification 
             parameters = new Dictionary<string, object>();
-            parameters.Add("CR", 1.0);
+            /*parameters.Add("CR", 1.0);
             parameters.Add("F", 0.5);
             parameters.Add("K", 1.0);
-            crossover = CrossoverFactory.GetCrossoverOperator("DifferentialEvolutionCrossover", parameters);
-            /*parameters.Add("probability", 1.0);
+            crossover = CrossoverFactory.GetCrossoverOperator("DifferentialEvolutionCrossover", parameters);*/
+            parameters.Add("probability", 1.0);
             parameters.Add("distributionIndex", 20.0);
-            crossover = CrossoverFactory.GetCrossoverOperator("SBXCrossover", parameters);*/
+            crossover = CrossoverFactory.GetCrossoverOperator("SBXCrossover", parameters);
 
             parameters = new Dictionary<string, object>();
             parameters.Add("probability", 1.0 / problem.NumberOfVariables);
@@ -98,8 +98,8 @@ namespace Algorithm_of_MO
 
             // Quality Indicators Operator
             //indicators = new QualityIndicator(problem, "DTLZ1.3D.pf");
-            //indicators = new QualityIndicator(problem, "ZDT3.pf");
-            indicators = new QualityIndicator(problem, "LZ09_F1.pf");
+            indicators = new QualityIndicator(problem, "ZDT3.pf");
+            //indicators = new QualityIndicator(problem, "LZ09_F1.pf");
 
             // Add the operators to the algorithm
             algorithm.AddOperator("crossover", crossover);
@@ -109,7 +109,7 @@ namespace Algorithm_of_MO
             // Add the indicator object to the algorithm
             algorithm.SetInputParameter("indicators", indicators);
 
-            for (int i = 1; i <= 100; i++)
+            for (int i = 1; i <= 30; i++)
             {
 
                 // Logger object and file to store log messages
@@ -117,13 +117,13 @@ namespace Algorithm_of_MO
 
                 var appenders = logger.Logger.Repository.GetAppenders();
                 var fileAppender = appenders[0] as log4net.Appender.FileAppender;
-                fileAppender.File = "Result/MOEAD_DE/LZ09_F1/MOEAD_DE" + i +".log";
+                fileAppender.File = "Result/MOEAD/ZDT3/MOEAD" + i +".log";
                 fileAppender.ActivateOptions();
 
-                string filevar = "Result/MOEAD_DE/LZ09_F1/VAR" + i;
-                string filefun = "Result/MOEAD_DE/LZ09_F1/FUN" + i;
+                string filevar = "Result/MOEAD/ZDT3/VAR" + i;
+                string filefun = "Result/MOEAD/ZDT3/FUN" + i;
 
-                FileStream file = new FileStream("Result/MOEAD_DE/LZ09_F1/MOEAD_DEnew" + i + ".txt", FileMode.OpenOrCreate, FileAccess.ReadWrite);
+                FileStream file = new FileStream("Result/MOEAD/ZDT3/MOEADnew" + i + ".txt", FileMode.OpenOrCreate, FileAccess.ReadWrite);
                 StreamWriter newlogger = new StreamWriter(file);
 
                 // Execute the Algorithm
@@ -232,25 +232,71 @@ namespace Algorithm_of_MO
 
             }
 
-            double[] r = new double[s.Length];
-            r = median(T, QI, spe);
-            double[] re = new double[s.Length];
-            re = IQR(T, QI, spe);
+            double[] med = new double[s.Length];
+            med = median(T, QI, spe);
+            double[] iqr = new double[s.Length];
+            iqr = IQR(T, QI, spe);
+            double[] sd = new double[s.Length];
+            sd = SD(T, QI, spe, allParameters);
 
             for (int k = 0; k < allParameters.Length; k++)
             {
                 Console.WriteLine("Average " + s[k] + ": " + allParameters[k] / numbers);
-                File.AppendAllText("Result/MOEAD_DE/LZ09_F1/finalQI" + ".txt", "Average " + s[k] + ": " + allParameters[k] / numbers + "\n");
-                Console.WriteLine("Median " + s[k] + ": " + r[k]);
-                File.AppendAllText("Result/MOEAD_DE/LZ09_F1/finalQI" + ".txt", "Median " + s[k] + ": " + r[k] + "\n");
-                Console.WriteLine("IQR " + s[k] + ": " + re[k]);
-                File.AppendAllText("Result/MOEAD_DE/LZ09_F1/finalQI" + ".txt", "IQR " + s[k] + ": " + re[k] + "\n");
+                File.AppendAllText("Result/MOEAD/ZDT3/finalQI" + ".txt", "Average " + s[k] + ": " + allParameters[k] / numbers + "\n");
+                Console.WriteLine("Standard Deviation " + s[k] + ": " + sd[k]);
+                File.AppendAllText("Result/MOEAD/ZDT3/finalQI" + ".txt", "Standard Deviation " + s[k] + ": " + sd[k] + "\n");
+                Console.WriteLine("Median " + s[k] + ": " + med[k]);
+                File.AppendAllText("Result/MOEAD/ZDT3/finalQI" + ".txt", "Median " + s[k] + ": " + med[k] + "\n");
+                Console.WriteLine("IQR " + s[k] + ": " + iqr[k]);
+                File.AppendAllText("Result/MOEAD/ZDT3/finalQI" + ".txt", "IQR " + s[k] + ": " + iqr[k] + "\n");
             }
 
         }
 
-        private void SD(double average, int n)
+        private double[] SD(int[] Time, double[,] Q, int[] SP, double[] all)
         {
+            double[] hy = new double[Time.Length];
+            double[] gd = new double[Time.Length];
+            double[] igd = new double[Time.Length];
+            double[] spr = new double[Time.Length];
+            double[] eps = new double[Time.Length];
+            double[] avg = new double[all.Length];
+            double[] sum = new double[all.Length];
+            double[] result = new double[all.Length];
+
+            for (int l = 0; l < Time.Length; l++)
+            {
+                hy[l] = Q[0, l];
+                gd[l] = Q[1, l];
+                igd[l] = Q[2, l];
+                spr[l] = Q[3, l];
+                eps[l] = Q[4, 1];
+
+            }
+
+            Array.Sort(Time);
+            Array.Sort(hy);
+            Array.Sort(gd);
+            Array.Sort(igd);
+            Array.Sort(spr);
+            Array.Sort(eps);
+            Array.Sort(SP);
+
+            for(int x = 0; x < all.Length; x++)
+            {
+                avg[x] = all[x] / Time.Length;
+            }
+
+            for(int y = 0; y < all.Length; y++)
+            {
+                for(int z = 0; z < Time.Length; z++)
+                {
+                    sum[y] = sum[y] + (Time[z] - avg[y]) * (Time[z] - avg[y]);
+                }
+                result[y] = Math.Sqrt(sum[y] / Time.Length);
+            }
+
+            return result;
 
         }
 
@@ -399,7 +445,7 @@ namespace Algorithm_of_MO
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            calculateStatistics("Result/MOEAD_DE/LZ09_F1", "MOEAD_DE", 100);
+            calculateStatistics("Result/MOEAD/ZDT3", "MOEAD", 30);
         }
     }
 }
