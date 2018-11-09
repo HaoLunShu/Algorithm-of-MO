@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Data.Objects;
 using JMetalCSharp;
 using JMetalCSharp.Core;
 using JMetalCSharp.Operators.Crossover;
@@ -60,9 +61,9 @@ namespace Algorithm_of_MO
             //problem = new DTLZ1("Real", 10, 3);
             //problem = new OKA2("Real") ;
 
-            //algorithm = new JMetalCSharp.Metaheuristics.NSGAII.NSGAII(problem);
+            algorithm = new JMetalCSharp.Metaheuristics.NSGAII.NSGAII(problem);
             //algorithm = new ssNSGAII(problem);
-            algorithm = new JMetalCSharp.Metaheuristics.MOEAD.MOEAD(problem);
+            //algorithm = new JMetalCSharp.Metaheuristics.MOEAD.MOEAD(problem);
 
             // Algorithm parameters
             algorithm.SetInputParameter("populationSize", 100);
@@ -73,9 +74,9 @@ namespace Algorithm_of_MO
 
             //algorithm.SetInputParameter("finalSize", 300); // used by MOEAD_DRA
 
-            algorithm.SetInputParameter("T", 20);
+            /*algorithm.SetInputParameter("T", 20);
             algorithm.SetInputParameter("delta", 0.9);
-            algorithm.SetInputParameter("nr", 2);
+            algorithm.SetInputParameter("nr", 2);*/
 
             // Mutation and Crossover for Real codification 
             parameters = new Dictionary<string, object>();
@@ -117,13 +118,13 @@ namespace Algorithm_of_MO
 
                 var appenders = logger.Logger.Repository.GetAppenders();
                 var fileAppender = appenders[0] as log4net.Appender.FileAppender;
-                fileAppender.File = "Result/MOEAD/ZDT3/MOEAD" + i +".log";
+                fileAppender.File = "Result/NSGAII/ZDT3/NSGAII" + i +".log";
                 fileAppender.ActivateOptions();
 
-                string filevar = "Result/MOEAD/ZDT3/VAR" + i;
-                string filefun = "Result/MOEAD/ZDT3/FUN" + i;
+                string filevar = "Result/NSGAII/ZDT3/VAR" + i;
+                string filefun = "Result/NSGAII/ZDT3/FUN" + i;
 
-                FileStream file = new FileStream("Result/MOEAD/ZDT3/MOEADnew" + i + ".txt", FileMode.OpenOrCreate, FileAccess.ReadWrite);
+                FileStream file = new FileStream("Result/NSGAII/ZDT3/NSGAIInew" + i + ".txt", FileMode.OpenOrCreate, FileAccess.ReadWrite);
                 StreamWriter newlogger = new StreamWriter(file);
 
                 // Execute the Algorithm
@@ -152,11 +153,11 @@ namespace Algorithm_of_MO
                     logger.Info("Epsilon    : " + indicators.GetEpsilon(population));
 
                     newlogger.WriteLine("Quality indicators");
-                    newlogger.WriteLine("Hypervolume: " + indicators.GetHypervolume(population) + "\n");
-                    newlogger.WriteLine("GD         : " + indicators.GetGD(population) + "\n");
-                    newlogger.WriteLine("IGD        : " + indicators.GetIGD(population) + "\n");
-                    newlogger.WriteLine("Spread     : " + indicators.GetSpread(population) + "\n");
-                    newlogger.WriteLine("Epsilon    : " + indicators.GetEpsilon(population) + "\n");
+                    newlogger.WriteLine("Hypervolume: " + indicators.GetHypervolume(population).ToString("F18") + "\n");
+                    newlogger.WriteLine("GD         : " + indicators.GetGD(population).ToString("F18") + "\n");
+                    newlogger.WriteLine("IGD        : " + indicators.GetIGD(population).ToString("F18") + "\n");
+                    newlogger.WriteLine("Spread     : " + indicators.GetSpread(population).ToString("F18") + "\n");
+                    newlogger.WriteLine("Epsilon    : " + indicators.GetEpsilon(population).ToString("F18") + "\n");
 
                     int evaluations = (int)algorithm.GetOutputParameter("evaluations");
                     logger.Info("Speed      : " + evaluations + "     evaluations");
@@ -174,18 +175,19 @@ namespace Algorithm_of_MO
             double[] allParameters = new double[s.Length];
             int[] T = new int[numbers];
             double[,] QI = new double[5, numbers];
+            List<double> Q = new List<double>();
             int[] spe = new int[numbers];
             int flag = 0;
             for(int i = 1; i <= numbers; i++)
             {
-                System.IO.StreamReader sr = new System.IO.StreamReader(p + i + ".txt");
-                string text;
-                while ((text = sr.ReadLine()) != null)
-                {
+                //System.IO.StreamReader sr = new System.IO.StreamReader(p + i + ".txt");
+                string text = System.IO.File.ReadAllText(p + i + ".txt");
+                //while ((text = sr.ReadLine()) != null)
+                //{
                     bool bt = text.Contains(s[0]);
                     if (bt)
                     {
-                        int indextime = text.LastIndexOf(s[0]);
+                        int indextime = text.IndexOf(s[0]);
                         if (indextime >= 0)
                         {
                             string time = text.Substring(indextime + 6, 4);
@@ -203,10 +205,10 @@ namespace Algorithm_of_MO
                         b[j] = text.Contains(s[j]);
                         if (b[j])
                         {
-                            int index = text.LastIndexOf(s[j]);
+                            int index = text.IndexOf(s[j]);
                             if (index >= 0)
                             {
-                                d[j] = text.Substring(index + 13);
+                                d[j] = text.Substring(index + 13, 20);
                                 para[j] = double.Parse(d[j]);
                                 QI[j-1, flag] = para[j];
                                 allParameters[j] = allParameters[j] + para[j];
@@ -217,7 +219,7 @@ namespace Algorithm_of_MO
                     bool bs = text.Contains(s[6]);
                     if (bs)
                     {
-                        int indexspeed = text.LastIndexOf(s[6]);
+                        int indexspeed = text.IndexOf(s[6]);
                         if (indexspeed >= 0)
                         {
                             string speed = text.Substring(indexspeed + 13, 5);
@@ -226,7 +228,7 @@ namespace Algorithm_of_MO
                             allParameters[6] = allParameters[6] + sp;
                         }
                     }
-                }
+                //}
 
                 flag++;
 
@@ -237,32 +239,33 @@ namespace Algorithm_of_MO
             double[] iqr = new double[s.Length];
             iqr = IQR(T, QI, spe);
             double[] sd = new double[s.Length];
-            sd = SD(T, QI, spe, allParameters);
+            sd = SD(T, QI, spe);
 
             for (int k = 0; k < allParameters.Length; k++)
             {
                 Console.WriteLine("Average " + s[k] + ": " + allParameters[k] / numbers);
-                File.AppendAllText("Result/MOEAD/ZDT3/finalQI" + ".txt", "Average " + s[k] + ": " + allParameters[k] / numbers + "\n");
+                File.AppendAllText("Result/NSGAII/ZDT3/finalQI" + ".txt", "Average " + s[k] + ": " + allParameters[k] / numbers + "\n");
                 Console.WriteLine("Standard Deviation " + s[k] + ": " + sd[k]);
-                File.AppendAllText("Result/MOEAD/ZDT3/finalQI" + ".txt", "Standard Deviation " + s[k] + ": " + sd[k] + "\n");
+                //System.Data.Objects.EntityFunctions.StandardDeviationP(QI)
+                File.AppendAllText("Result/NSGAII/ZDT3/finalQI" + ".txt", "Standard Deviation " + s[k] + ": " + sd[k] + "\n");
                 Console.WriteLine("Median " + s[k] + ": " + med[k]);
-                File.AppendAllText("Result/MOEAD/ZDT3/finalQI" + ".txt", "Median " + s[k] + ": " + med[k] + "\n");
+                File.AppendAllText("Result/NSGAII/ZDT3/finalQI" + ".txt", "Median " + s[k] + ": " + med[k] + "\n");
                 Console.WriteLine("IQR " + s[k] + ": " + iqr[k]);
-                File.AppendAllText("Result/MOEAD/ZDT3/finalQI" + ".txt", "IQR " + s[k] + ": " + iqr[k] + "\n");
+                File.AppendAllText("Result/NSGAII/ZDT3/finalQI" + ".txt", "IQR " + s[k] + ": " + iqr[k] + "\n");
             }
 
         }
 
-        private double[] SD(int[] Time, double[,] Q, int[] SP, double[] all)
+        private double[] SD(int[] Time, double[,] Q, int[] SP)
         {
             double[] hy = new double[Time.Length];
             double[] gd = new double[Time.Length];
             double[] igd = new double[Time.Length];
             double[] spr = new double[Time.Length];
             double[] eps = new double[Time.Length];
-            double[] avg = new double[all.Length];
-            double[] sum = new double[all.Length];
-            double[] result = new double[all.Length];
+            double[] avg = new double[7];
+            double[] sum = new double[7];
+            double[] result = new double[7];
 
             for (int l = 0; l < Time.Length; l++)
             {
@@ -274,28 +277,30 @@ namespace Algorithm_of_MO
 
             }
 
-            Array.Sort(Time);
-            Array.Sort(hy);
-            Array.Sort(gd);
-            Array.Sort(igd);
-            Array.Sort(spr);
-            Array.Sort(eps);
-            Array.Sort(SP);
+            avg[0] = Time.Average();
+            avg[1] = hy.Average();
+            avg[2] = gd.Average();
+            avg[3] = igd.Average();
+            avg[4] = spr.Average();
+            avg[5] = eps.Average();
+            avg[6] = SP.Average();
 
-            for(int x = 0; x < all.Length; x++)
+            for(int z = 0; z < Time.Length; z++)
             {
-                avg[x] = all[x] / Time.Length;
+                sum[0] = sum[0] + Time[z] * Time[z];
+                sum[1] = sum[1] + hy[z] * hy[z];
+                sum[2] = sum[2] + gd[z] * gd[z];
+                sum[3] = sum[3] + igd[z] * igd[z];
+                sum[4] = sum[4] + spr[z] * spr[z];
+                sum[5] = sum[5] + eps[z] * eps[z];
+                sum[6] = sum[6] + SP[z] * SP[z];
             }
 
-            for(int y = 0; y < all.Length; y++)
+            for(int y = 0; y < 7; y++)
             {
-                for(int z = 0; z < Time.Length; z++)
-                {
-                    sum[y] = sum[y] + (Time[z] - avg[y]) * (Time[z] - avg[y]);
-                }
-                result[y] = Math.Sqrt(sum[y] / Time.Length);
+                result[y] = Math.Sqrt(sum[y] - (avg[y] * avg[y]));
             }
-
+            
             return result;
 
         }
@@ -445,7 +450,7 @@ namespace Algorithm_of_MO
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            calculateStatistics("Result/MOEAD/ZDT3", "MOEAD", 30);
+            calculateStatistics("Result/NSGAII/ZDT3", "NSGAII", 30);
         }
     }
 }
