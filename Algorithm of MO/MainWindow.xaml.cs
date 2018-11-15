@@ -25,6 +25,8 @@ using JMetalCSharp.Problems.ZDT;
 using JMetalCSharp.Problems.LZ09;
 using JMetalCSharp.QualityIndicator;
 using JMetalCSharp.Utils;
+using JMetalCSharp.Problems.Kursawe;
+using JMetalCSharp.Problems.Schaffer;
 
 namespace Algorithm_of_MO
 {
@@ -47,8 +49,107 @@ namespace Algorithm_of_MO
             Operator selection; // Selection operator
 
             Dictionary<string, object> parameters; // Operator parameters
+            Dictionary<string, string> setting = new Dictionary<string, string>();
 
             QualityIndicator indicators; // Object to get quality indicators
+
+            string text;
+            string pb = "";
+            string st = "";
+            string nov = "";
+            string noo = "";
+            System.IO.StreamReader sr = new System.IO.StreamReader(@"Data\Parameters\setting.txt");
+            while ((text = sr.ReadLine()) != null)
+            {
+                string[] words = text.Split(' ');
+                setting.Add(words[0], words[1]);
+                if(true == setting.ContainsKey("problem"))
+                    pb = setting["problem"];
+                if (true == setting.ContainsKey("solutionType"))
+                    st = setting["solutionType"];
+                if (true == setting.ContainsKey("numberOfVariables"))
+                    nov = setting["numberOfVariables"];
+                if (true == setting.ContainsKey("numberOfObjectives"))
+                    noo = setting["numberOfObjectives"];
+                switch(pb)
+                {
+                    case "ZDT1":
+                        problem = new ZDT1(st, int.Parse(nov));
+                        break;
+                    case "ZDT2":
+                        problem = new ZDT2(st, int.Parse(nov));
+                        break;
+                    case "ZDT3":
+                        problem = new ZDT3(st, int.Parse(nov));
+                        break;
+                    case "ZDT4":
+                        problem = new ZDT4(st, int.Parse(nov));
+                        break;
+                    case "ZDT5":
+                        problem = new ZDT5(st, int.Parse(nov));
+                        break;
+                    case "ZDT6":
+                        problem = new ZDT6(st, int.Parse(nov));
+                        break;
+                    case "DTLZ1":
+                        problem = new DTLZ1(st, int.Parse(nov), int.Parse(noo));
+                        break;
+                    case "DTLZ2":
+                        problem = new DTLZ2(st, int.Parse(nov), int.Parse(noo));
+                        break;
+                    case "DTLZ3":
+                        problem = new DTLZ3(st, int.Parse(nov), int.Parse(noo));
+                        break;
+                    case "DTLZ4":
+                        problem = new DTLZ4(st, int.Parse(nov), int.Parse(noo));
+                        break;
+                    case "DTLZ5":
+                        problem = new DTLZ5(st, int.Parse(nov), int.Parse(noo));
+                        break;
+                    case "DTLZ6":
+                        problem = new DTLZ6(st, int.Parse(nov), int.Parse(noo));
+                        break;
+                    case "DTLZ7":
+                        problem = new DTLZ7(st, int.Parse(nov), int.Parse(noo));
+                        break;
+                    case "Fonseca":
+                    case "Kursawe":
+                        problem = new Kursawe(st, int.Parse(nov));
+                        break;
+                    case "LZ09_F1":
+                        problem = new LZ09_F1(st);
+                        break;
+                    case "LZ09_F2":
+                        problem = new LZ09_F2(st);
+                        break;
+                    case "LZ09_F3":
+                        problem = new LZ09_F3(st);
+                        break;
+                    case "LZ09_F4":
+                        problem = new LZ09_F4(st);
+                        break;
+                    case "LZ09_F5":
+                        problem = new LZ09_F5(st);
+                        break;
+                    case "LZ09_F6":
+                        problem = new LZ09_F6(st);
+                        break;
+                    case "LZ09_F7":
+                        problem = new LZ09_F7(st);
+                        break;
+                    case "LZ09_F8":
+                        problem = new LZ09_F8(st);
+                        break;
+                    case "LZ09_F9":
+                        problem = new LZ09_F9(st);
+                        break;
+                    case "Schaffer":
+                        problem = new Schaffer(st);
+                        break;
+                    default:
+                        break;
+                }
+            }
 
             indicators = null;
             // Default problem
@@ -180,10 +281,7 @@ namespace Algorithm_of_MO
             int flag = 0;
             for(int i = 1; i <= numbers; i++)
             {
-                //System.IO.StreamReader sr = new System.IO.StreamReader(p + i + ".txt");
                 string text = System.IO.File.ReadAllText(p + i + ".txt");
-                //while ((text = sr.ReadLine()) != null)
-                //{
                     bool bt = text.Contains(s[0]);
                     if (bt)
                     {
@@ -228,7 +326,6 @@ namespace Algorithm_of_MO
                             allParameters[6] = allParameters[6] + sp;
                         }
                     }
-                //}
 
                 flag++;
 
@@ -285,7 +382,17 @@ namespace Algorithm_of_MO
             avg[5] = eps.Average();
             avg[6] = SP.Average();
 
-            for(int z = 0; z < Time.Length; z++)
+            double[] sumOfSquaresOfDifferences = new double[7];
+            
+            sumOfSquaresOfDifferences[0] = Time.Sum(val => (val - avg[0]) * (val - avg[0]));
+            sumOfSquaresOfDifferences[1] = hy.Sum(val => (val - avg[1]) * (val - avg[1]));
+            sumOfSquaresOfDifferences[2] = gd.Sum(val => (val - avg[2]) * (val - avg[2]));
+            sumOfSquaresOfDifferences[3] = igd.Sum(val => (val - avg[3]) * (val - avg[3]));
+            sumOfSquaresOfDifferences[4] = spr.Sum(val => (val - avg[4]) * (val - avg[4]));
+            sumOfSquaresOfDifferences[5] = eps.Sum(val => (val - avg[5]) * (val - avg[5]));
+            sumOfSquaresOfDifferences[6] = SP.Sum(val => (val - avg[6]) * (val - avg[6]));
+
+            /*for (int z = 0; z < Time.Length; z++)
             {
                 sum[0] = sum[0] + Time[z] * Time[z];
                 sum[1] = sum[1] + hy[z] * hy[z];
@@ -294,11 +401,11 @@ namespace Algorithm_of_MO
                 sum[4] = sum[4] + spr[z] * spr[z];
                 sum[5] = sum[5] + eps[z] * eps[z];
                 sum[6] = sum[6] + SP[z] * SP[z];
-            }
+            }*/
 
             for(int y = 0; y < 7; y++)
             {
-                result[y] = Math.Sqrt(sum[y] - (avg[y] * avg[y]));
+                result[y] = Math.Sqrt(sumOfSquaresOfDifferences[y] / Time.Length);
             }
             
             return result;
