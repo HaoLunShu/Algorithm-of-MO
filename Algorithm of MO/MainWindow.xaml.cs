@@ -27,6 +27,7 @@ using JMetalCSharp.QualityIndicator;
 using JMetalCSharp.Utils;
 using JMetalCSharp.Problems.Kursawe;
 using JMetalCSharp.Problems.Schaffer;
+using JMetalCSharp.Problems.Fonseca;
 
 namespace Algorithm_of_MO
 {
@@ -40,16 +41,17 @@ namespace Algorithm_of_MO
             InitializeComponent();
         }
 
+        Dictionary<string, string> setting = new Dictionary<string, string>();
+
         public void MyAlgorithm()
         {
-            Problem problem; // The problem to solve
-            Algorithm algorithm; // The algorithm to use
-            Operator crossover; // Crossover operator
-            Operator mutation; // Mutation operator
-            Operator selection; // Selection operator
+            Problem problem = null; // The problem to solve
+            Algorithm algorithm = null; // The algorithm to use
+            Operator crossover = null; // Crossover operator
+            Operator mutation = null; // Mutation operator
+            Operator selection= null; // Selection operator
 
             Dictionary<string, object> parameters; // Operator parameters
-            Dictionary<string, string> setting = new Dictionary<string, string>();
 
             QualityIndicator indicators; // Object to get quality indicators
 
@@ -58,97 +60,179 @@ namespace Algorithm_of_MO
             string st = "";
             string nov = "";
             string noo = "";
+            string al = "";
+            string ps = "";
+            string me = "";
+            string itn = "";
+            string dad = "";
+            string t = "";
+            string delta = "";
+            string nr = "";
+            string co = "";
+            string poc = "";
+            string dioc = "";
+            string cr = "";
+            string f = "";
+            string k = "";
+            string dev = "";
+            string mu = "";
+            //string pom = "";
+            string diom = "";
+            string s = "";
+            string qi = "";
+            string rt = "";
             System.IO.StreamReader sr = new System.IO.StreamReader(@"Data\Parameters\setting.txt");
             while ((text = sr.ReadLine()) != null)
             {
                 string[] words = text.Split(' ');
-                setting.Add(words[0], words[1]);
-                if(true == setting.ContainsKey("problem"))
-                    pb = setting["problem"];
-                if (true == setting.ContainsKey("solutionType"))
-                    st = setting["solutionType"];
-                if (true == setting.ContainsKey("numberOfVariables"))
-                    nov = setting["numberOfVariables"];
-                if (true == setting.ContainsKey("numberOfObjectives"))
-                    noo = setting["numberOfObjectives"];
-                switch(pb)
-                {
-                    case "ZDT1":
-                        problem = new ZDT1(st, int.Parse(nov));
-                        break;
-                    case "ZDT2":
-                        problem = new ZDT2(st, int.Parse(nov));
-                        break;
-                    case "ZDT3":
-                        problem = new ZDT3(st, int.Parse(nov));
-                        break;
-                    case "ZDT4":
-                        problem = new ZDT4(st, int.Parse(nov));
-                        break;
-                    case "ZDT5":
-                        problem = new ZDT5(st, int.Parse(nov));
-                        break;
-                    case "ZDT6":
-                        problem = new ZDT6(st, int.Parse(nov));
-                        break;
-                    case "DTLZ1":
-                        problem = new DTLZ1(st, int.Parse(nov), int.Parse(noo));
-                        break;
-                    case "DTLZ2":
-                        problem = new DTLZ2(st, int.Parse(nov), int.Parse(noo));
-                        break;
-                    case "DTLZ3":
-                        problem = new DTLZ3(st, int.Parse(nov), int.Parse(noo));
-                        break;
-                    case "DTLZ4":
-                        problem = new DTLZ4(st, int.Parse(nov), int.Parse(noo));
-                        break;
-                    case "DTLZ5":
-                        problem = new DTLZ5(st, int.Parse(nov), int.Parse(noo));
-                        break;
-                    case "DTLZ6":
-                        problem = new DTLZ6(st, int.Parse(nov), int.Parse(noo));
-                        break;
-                    case "DTLZ7":
-                        problem = new DTLZ7(st, int.Parse(nov), int.Parse(noo));
-                        break;
-                    case "Fonseca":
-                    case "Kursawe":
-                        problem = new Kursawe(st, int.Parse(nov));
-                        break;
-                    case "LZ09_F1":
-                        problem = new LZ09_F1(st);
-                        break;
-                    case "LZ09_F2":
-                        problem = new LZ09_F2(st);
-                        break;
-                    case "LZ09_F3":
-                        problem = new LZ09_F3(st);
-                        break;
-                    case "LZ09_F4":
-                        problem = new LZ09_F4(st);
-                        break;
-                    case "LZ09_F5":
-                        problem = new LZ09_F5(st);
-                        break;
-                    case "LZ09_F6":
-                        problem = new LZ09_F6(st);
-                        break;
-                    case "LZ09_F7":
-                        problem = new LZ09_F7(st);
-                        break;
-                    case "LZ09_F8":
-                        problem = new LZ09_F8(st);
-                        break;
-                    case "LZ09_F9":
-                        problem = new LZ09_F9(st);
-                        break;
-                    case "Schaffer":
-                        problem = new Schaffer(st);
-                        break;
-                    default:
-                        break;
-                }
+                if (true == setting.ContainsKey(words[0]))
+                    setting[words[0]] = words[1];
+                else
+                    setting.Add(words[0], words[1]);
+            }
+
+            if (true == setting.ContainsKey("problem"))
+                pb = setting["problem"];
+            if (true == setting.ContainsKey("solutionType"))
+                st = setting["solutionType"];
+            if (true == setting.ContainsKey("numberOfVariables"))
+                nov = setting["numberOfVariables"];
+            if (true == setting.ContainsKey("numberOfObjectives"))
+                noo = setting["numberOfObjectives"];
+            if (true == setting.ContainsKey("algorithm"))
+                al = setting["algorithm"];
+            if (true == setting.ContainsKey("populationSize"))
+                ps = setting["populationSize"];
+            if (true == setting.ContainsKey("maxEvaluations"))
+                me = setting["maxEvaluations"];
+            if (true == setting.ContainsKey("iterationsNumber"))
+                itn = setting["iterationsNumber"];
+            if (true == setting.ContainsKey("dataDirectory"))
+                dad = setting["dataDirectory"];
+            if (true == setting.ContainsKey("T"))
+                t = setting["T"];
+            if (true == setting.ContainsKey("delta"))
+                delta = setting["delta"];
+            if (true == setting.ContainsKey("nr"))
+                nr = setting["nr"];
+            if (true == setting.ContainsKey("Crossover"))
+                co = setting["Crossover"];
+            if (true == setting.ContainsKey("probabilityOfCrossover"))
+                poc = setting["probabilityOfCrossover"];
+            if (true == setting.ContainsKey("distributionIndexOfCrossover"))
+                dioc = setting["distributionIndexOfCrossover"];
+            if (true == setting.ContainsKey("CR"))
+                cr = setting["CR"];
+            if (true == setting.ContainsKey("F"))
+                f = setting["F"];
+            if (true == setting.ContainsKey("K"))
+                k = setting["K"];
+            if (true == setting.ContainsKey("DEVariant"))
+                dev = setting["DEVariant"];
+            if (true == setting.ContainsKey("Mutation"))
+                mu = setting["Mutation"];
+            //if (true == setting.ContainsKey("probabilityOfMutation"))
+                //pom = setting["probabilityOfMutation"];
+            if (true == setting.ContainsKey("distributionIndexOfMutation"))
+                diom = setting["distributionIndexOfMutation"];
+            if (true == setting.ContainsKey("Selection"))
+                s = setting["Selection"];
+            if (true == setting.ContainsKey("QualityIndicator"))
+                qi = setting["QualityIndicator"];
+            if (true == setting.ContainsKey("repeatTimes"))
+                rt = setting["repeatTimes"];
+            switch (pb)
+            {
+                case "ZDT1":
+                    problem = new ZDT1(st, int.Parse(nov));
+                    break;
+                case "ZDT2":
+                    problem = new ZDT2(st, int.Parse(nov));
+                    break;
+                case "ZDT3":
+                    problem = new ZDT3(st, int.Parse(nov));
+                    break;
+                case "ZDT4":
+                    problem = new ZDT4(st, int.Parse(nov));
+                    break;
+                case "ZDT5":
+                    problem = new ZDT5(st, int.Parse(nov));
+                    break;
+                case "ZDT6":
+                    problem = new ZDT6(st, int.Parse(nov));
+                    break;
+                case "DTLZ1":
+                    problem = new DTLZ1(st, int.Parse(nov), int.Parse(noo));
+                    break;
+                case "DTLZ2":
+                    problem = new DTLZ2(st, int.Parse(nov), int.Parse(noo));
+                    break;
+                case "DTLZ3":
+                    problem = new DTLZ3(st, int.Parse(nov), int.Parse(noo));
+                    break;
+                case "DTLZ4":
+                    problem = new DTLZ4(st, int.Parse(nov), int.Parse(noo));
+                    break;
+                case "DTLZ5":
+                    problem = new DTLZ5(st, int.Parse(nov), int.Parse(noo));
+                    break;
+                case "DTLZ6":
+                    problem = new DTLZ6(st, int.Parse(nov), int.Parse(noo));
+                    break;
+                case "DTLZ7":
+                    problem = new DTLZ7(st, int.Parse(nov), int.Parse(noo));
+                    break;
+                case "Fonseca":
+                    problem = new Fonseca(st);
+                    break;
+                case "Kursawe":
+                    problem = new Kursawe(st, int.Parse(nov));
+                    break;
+                case "LZ09_F1":
+                    problem = new LZ09_F1(st);
+                    break;
+                case "LZ09_F2":
+                    problem = new LZ09_F2(st);
+                    break;
+                case "LZ09_F3":
+                    problem = new LZ09_F3(st);
+                    break;
+                case "LZ09_F4":
+                    problem = new LZ09_F4(st);
+                    break;
+                case "LZ09_F5":
+                    problem = new LZ09_F5(st);
+                    break;
+                case "LZ09_F6":
+                    problem = new LZ09_F6(st);
+                    break;
+                case "LZ09_F7":
+                    problem = new LZ09_F7(st);
+                    break;
+                case "LZ09_F8":
+                    problem = new LZ09_F8(st);
+                    break;
+                case "LZ09_F9":
+                    problem = new LZ09_F9(st);
+                    break;
+                case "Schaffer":
+                    problem = new Schaffer(st);
+                    break;
+                default:
+                    break;
+            }
+
+            switch (al)
+            {
+                case "NSGAII":
+                    algorithm = new JMetalCSharp.Metaheuristics.NSGAII.NSGAII(problem);
+                    break;
+                case "MOEAD":
+                    algorithm = new JMetalCSharp.Metaheuristics.MOEAD.MOEAD(problem);
+                    algorithm.SetInputParameter("T", int.Parse(t));
+                    algorithm.SetInputParameter("delta", double.Parse(delta));
+                    algorithm.SetInputParameter("nr", int.Parse(nr));
+                    break;
             }
 
             indicators = null;
@@ -156,42 +240,46 @@ namespace Algorithm_of_MO
             //problem = new Kursawe("Real", 3);
             //problem = new Kursawe("BinaryReal", 3);
             //problem = new Water("Real");
-            problem = new ZDT3("ArrayReal", 30);
+            //problem = new ZDT3("ArrayReal", 30);
             //problem = new LZ09_F1("Real");
             //problem = new ConstrEx("Real");
             //problem = new DTLZ1("Real", 10, 3);
             //problem = new OKA2("Real") ;
 
-            algorithm = new JMetalCSharp.Metaheuristics.NSGAII.NSGAII(problem);
+            //algorithm = new JMetalCSharp.Metaheuristics.NSGAII.NSGAII(problem);
             //algorithm = new ssNSGAII(problem);
             //algorithm = new JMetalCSharp.Metaheuristics.MOEAD.MOEAD(problem);
 
             // Algorithm parameters
-            algorithm.SetInputParameter("populationSize", 100);
-            algorithm.SetInputParameter("maxEvaluations", 30000);
-            algorithm.SetInputParameter("iterationsNumber", 250);
+            algorithm.SetInputParameter("populationSize", int.Parse(ps));
+            algorithm.SetInputParameter("maxEvaluations", int.Parse(me));
+            algorithm.SetInputParameter("iterationsNumber", int.Parse(itn));
 
-            algorithm.SetInputParameter("dataDirectory", "Data/Parameters/Weight");
+            algorithm.SetInputParameter("dataDirectory", dad);
 
             //algorithm.SetInputParameter("finalSize", 300); // used by MOEAD_DRA
 
-            /*algorithm.SetInputParameter("T", 20);
-            algorithm.SetInputParameter("delta", 0.9);
-            algorithm.SetInputParameter("nr", 2);*/
 
             // Mutation and Crossover for Real codification 
             parameters = new Dictionary<string, object>();
-            /*parameters.Add("CR", 1.0);
-            parameters.Add("F", 0.5);
-            parameters.Add("K", 1.0);
-            crossover = CrossoverFactory.GetCrossoverOperator("DifferentialEvolutionCrossover", parameters);*/
-            parameters.Add("probability", 1.0);
-            parameters.Add("distributionIndex", 20.0);
-            crossover = CrossoverFactory.GetCrossoverOperator("SBXCrossover", parameters);
+            switch(co)
+            {
+                case "SBXCrossover":
+                    parameters.Add("probability", double.Parse(poc));
+                    parameters.Add("distributionIndex", double.Parse(dioc));
+                    crossover = CrossoverFactory.GetCrossoverOperator("SBXCrossover", parameters);
+                    break;
+                case "DifferentialEvolutionCrossover":
+                    parameters.Add("CR", double.Parse(cr));
+                    parameters.Add("F", double.Parse(f));
+                    parameters.Add("K", double.Parse(k));
+                    crossover = CrossoverFactory.GetCrossoverOperator("DifferentialEvolutionCrossover", parameters);
+                    break;
+            }
 
             parameters = new Dictionary<string, object>();
             parameters.Add("probability", 1.0 / problem.NumberOfVariables);
-            parameters.Add("distributionIndex", 20.0);
+            parameters.Add("distributionIndex", double.Parse(diom));
             mutation = MutationFactory.GetMutationOperator("PolynomialMutation", parameters);
 
             // Selection Operator 
@@ -200,7 +288,7 @@ namespace Algorithm_of_MO
 
             // Quality Indicators Operator
             //indicators = new QualityIndicator(problem, "DTLZ1.3D.pf");
-            indicators = new QualityIndicator(problem, "ZDT3.pf");
+            indicators = new QualityIndicator(problem, qi);
             //indicators = new QualityIndicator(problem, "LZ09_F1.pf");
 
             // Add the operators to the algorithm
@@ -211,7 +299,7 @@ namespace Algorithm_of_MO
             // Add the indicator object to the algorithm
             algorithm.SetInputParameter("indicators", indicators);
 
-            for (int i = 1; i <= 30; i++)
+            for (int i = 1; i <= int.Parse(rt); i++)
             {
 
                 // Logger object and file to store log messages
@@ -219,13 +307,13 @@ namespace Algorithm_of_MO
 
                 var appenders = logger.Logger.Repository.GetAppenders();
                 var fileAppender = appenders[0] as log4net.Appender.FileAppender;
-                fileAppender.File = "Result/NSGAII/ZDT3/NSGAII" + i +".log";
+                fileAppender.File = "Result/" + al + "_" + co + "/" + pb + "_" + st + "/" + al + i +".log";
                 fileAppender.ActivateOptions();
 
-                string filevar = "Result/NSGAII/ZDT3/VAR" + i;
-                string filefun = "Result/NSGAII/ZDT3/FUN" + i;
+                string filevar = "Result/" + al + "_" + co + "/" + pb + "_" + st + "/VAR" + i;
+                string filefun = "Result/" + al + "_" + co + "/" + pb + "_" + st + "/FUN" + i;
 
-                FileStream file = new FileStream("Result/NSGAII/ZDT3/NSGAIInew" + i + ".txt", FileMode.OpenOrCreate, FileAccess.ReadWrite);
+                FileStream file = new FileStream("Result/" + al + "_" + co + "/" + pb + "_" + st + "/" + al + "new" + i + ".txt", FileMode.OpenOrCreate, FileAccess.ReadWrite);
                 StreamWriter newlogger = new StreamWriter(file);
 
                 // Execute the Algorithm
@@ -267,6 +355,7 @@ namespace Algorithm_of_MO
                 newlogger.Close();
                 file.Close();
             }
+            sr.Close();
         }
 
         public void calculateStatistics(string filepath, string algorithm, int numbers)
@@ -341,14 +430,14 @@ namespace Algorithm_of_MO
             for (int k = 0; k < allParameters.Length; k++)
             {
                 Console.WriteLine("Average " + s[k] + ": " + allParameters[k] / numbers);
-                File.AppendAllText("Result/NSGAII/ZDT3/finalQI" + ".txt", "Average " + s[k] + ": " + allParameters[k] / numbers + "\n");
+                File.AppendAllText(filepath + "/finalQI" + ".txt", "Average " + s[k] + ": " + allParameters[k] / numbers + "\n");
                 Console.WriteLine("Standard Deviation " + s[k] + ": " + sd[k]);
                 //System.Data.Objects.EntityFunctions.StandardDeviationP(QI)
-                File.AppendAllText("Result/NSGAII/ZDT3/finalQI" + ".txt", "Standard Deviation " + s[k] + ": " + sd[k] + "\n");
+                File.AppendAllText(filepath + "/finalQI" + ".txt", "Standard Deviation " + s[k] + ": " + sd[k] + "\n");
                 Console.WriteLine("Median " + s[k] + ": " + med[k]);
-                File.AppendAllText("Result/NSGAII/ZDT3/finalQI" + ".txt", "Median " + s[k] + ": " + med[k] + "\n");
+                File.AppendAllText(filepath + "/finalQI" + ".txt", "Median " + s[k] + ": " + med[k] + "\n");
                 Console.WriteLine("IQR " + s[k] + ": " + iqr[k]);
-                File.AppendAllText("Result/NSGAII/ZDT3/finalQI" + ".txt", "IQR " + s[k] + ": " + iqr[k] + "\n");
+                File.AppendAllText(filepath + "/finalQI" + ".txt", "IQR " + s[k] + ": " + iqr[k] + "\n");
             }
 
         }
@@ -391,17 +480,6 @@ namespace Algorithm_of_MO
             sumOfSquaresOfDifferences[4] = spr.Sum(val => (val - avg[4]) * (val - avg[4]));
             sumOfSquaresOfDifferences[5] = eps.Sum(val => (val - avg[5]) * (val - avg[5]));
             sumOfSquaresOfDifferences[6] = SP.Sum(val => (val - avg[6]) * (val - avg[6]));
-
-            /*for (int z = 0; z < Time.Length; z++)
-            {
-                sum[0] = sum[0] + Time[z] * Time[z];
-                sum[1] = sum[1] + hy[z] * hy[z];
-                sum[2] = sum[2] + gd[z] * gd[z];
-                sum[3] = sum[3] + igd[z] * igd[z];
-                sum[4] = sum[4] + spr[z] * spr[z];
-                sum[5] = sum[5] + eps[z] * eps[z];
-                sum[6] = sum[6] + SP[z] * SP[z];
-            }*/
 
             for(int y = 0; y < 7; y++)
             {
@@ -557,7 +635,22 @@ namespace Algorithm_of_MO
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            calculateStatistics("Result/NSGAII/ZDT3", "NSGAII", 30);
+            string pb = "";
+            string st = "";
+            string co = "";
+            string al = "";
+            string rt = "";
+            if (true == setting.ContainsKey("problem"))
+                pb = setting["problem"];
+            if (true == setting.ContainsKey("solutionType"))
+                st = setting["solutionType"];
+            if (true == setting.ContainsKey("algorithm"))
+                al = setting["algorithm"];
+            if (true == setting.ContainsKey("Crossover"))
+                co = setting["Crossover"];
+            if (true == setting.ContainsKey("repeatTimes"))
+                rt = setting["repeatTimes"];
+            calculateStatistics("Result/" + al + "_" + co + "/" + pb + "_" + st, al, int.Parse(rt));
         }
     }
 }
