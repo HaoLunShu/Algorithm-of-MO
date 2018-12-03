@@ -90,6 +90,7 @@ namespace Algorithm_of_MO
                 else
                     setting.Add(words[0], words[1]);
             }
+            sr.Close();
 
             if (true == setting.ContainsKey("problem"))
                 pb = setting["problem"];
@@ -222,6 +223,25 @@ namespace Algorithm_of_MO
                     break;
             }
 
+            string dirPath = "Result/" + al + "_" + co + "/" + pb + "_" + st;
+            if (Directory.Exists(dirPath))
+            {
+                Console.WriteLine("The directory {0} already exists.", dirPath);
+            }
+            else
+            {
+                Directory.CreateDirectory(dirPath);
+                Console.WriteLine("The directory {0} was created.", dirPath);
+            }
+
+            string filepath = dirPath + "/Parameter.txt";
+            string[] line1 = { "numberOfVariables " + nov, "numberOfObjectives " + noo, "populationSize " + ps, "maxEvaluations " + me, "iterationsNumber" + itn };
+            string[] line2 = { "T " + t, "delta " + delta, "nr " + nr };
+            string[] line3 = { "probabilityOfCrossover " + poc, "distributionIndexOfCrossover " + dioc };
+            string[] line4 = { "CR " + cr, "F " + f, "K " + k };
+            string[] line5 = { "probabilityOfMutation " + 1.0 / problem.NumberOfVariables, "distributionIndexOfMutation " + diom, "" };
+            File.AppendAllLines(filepath, line1);
+
             switch (al)
             {
                 case "NSGAII":
@@ -232,6 +252,7 @@ namespace Algorithm_of_MO
                     algorithm.SetInputParameter("T", int.Parse(t));
                     algorithm.SetInputParameter("delta", double.Parse(delta));
                     algorithm.SetInputParameter("nr", int.Parse(nr));
+                    File.AppendAllLines(filepath, line2);
                     break;
             }
 
@@ -255,9 +276,10 @@ namespace Algorithm_of_MO
             algorithm.SetInputParameter("maxEvaluations", int.Parse(me));
             algorithm.SetInputParameter("iterationsNumber", int.Parse(itn));
 
-            algorithm.SetInputParameter("dataDirectory", dad);
+            algorithm.SetInputParameter("dataDirectory", "Data/Parameters/Weight");
 
             //algorithm.SetInputParameter("finalSize", 300); // used by MOEAD_DRA
+
 
 
             // Mutation and Crossover for Real codification 
@@ -268,12 +290,14 @@ namespace Algorithm_of_MO
                     parameters.Add("probability", double.Parse(poc));
                     parameters.Add("distributionIndex", double.Parse(dioc));
                     crossover = CrossoverFactory.GetCrossoverOperator("SBXCrossover", parameters);
+                    File.AppendAllLines(filepath, line3);
                     break;
                 case "DifferentialEvolutionCrossover":
                     parameters.Add("CR", double.Parse(cr));
                     parameters.Add("F", double.Parse(f));
                     parameters.Add("K", double.Parse(k));
                     crossover = CrossoverFactory.GetCrossoverOperator("DifferentialEvolutionCrossover", parameters);
+                    File.AppendAllLines(filepath, line4);
                     break;
             }
 
@@ -281,6 +305,8 @@ namespace Algorithm_of_MO
             parameters.Add("probability", 1.0 / problem.NumberOfVariables);
             parameters.Add("distributionIndex", double.Parse(diom));
             mutation = MutationFactory.GetMutationOperator("PolynomialMutation", parameters);
+            File.AppendAllLines(filepath, line5);
+            //File.AppendAllText(filepath, "");
 
             // Selection Operator 
             parameters = null;
@@ -307,13 +333,13 @@ namespace Algorithm_of_MO
 
                 var appenders = logger.Logger.Repository.GetAppenders();
                 var fileAppender = appenders[0] as log4net.Appender.FileAppender;
-                fileAppender.File = "Result/" + al + "_" + co + "/" + pb + "_" + st + "/" + al + i +".log";
+                fileAppender.File = dirPath + "/" + al + i +".log";
                 fileAppender.ActivateOptions();
 
-                string filevar = "Result/" + al + "_" + co + "/" + pb + "_" + st + "/VAR" + i;
-                string filefun = "Result/" + al + "_" + co + "/" + pb + "_" + st + "/FUN" + i;
+                string filevar = dirPath + "/VAR" + i;
+                string filefun = dirPath + "/FUN" + i;
 
-                FileStream file = new FileStream("Result/" + al + "_" + co + "/" + pb + "_" + st + "/" + al + "new" + i + ".txt", FileMode.OpenOrCreate, FileAccess.ReadWrite);
+                FileStream file = new FileStream(dirPath + "/" + al + "new" + i + ".txt", FileMode.OpenOrCreate, FileAccess.ReadWrite);
                 StreamWriter newlogger = new StreamWriter(file);
 
                 // Execute the Algorithm
@@ -355,7 +381,6 @@ namespace Algorithm_of_MO
                 newlogger.Close();
                 file.Close();
             }
-            sr.Close();
         }
 
         public void calculateStatistics(string filepath, string algorithm, int numbers)
