@@ -43,10 +43,26 @@ namespace JMetalCSharp.Core
 			}
 		}
 
-		/// <summary>
-		/// Stores the number of objective values of the solution
-		/// </summary>
-		private int numberOfObjectives;
+        double[] s;
+        /// <summary>
+        /// Stores the Standard Deviation values of the solution
+        /// </summary>
+        public double[] stdDev
+        {
+            get
+            {
+                return s;
+            }
+            set
+            {
+                s = value;
+            }
+        }
+
+        /// <summary>
+        /// Stores the number of objective values of the solution
+        /// </summary>
+        private int numberOfObjectives;
 
 		/// <summary>
 		/// Returns the number of objectives.

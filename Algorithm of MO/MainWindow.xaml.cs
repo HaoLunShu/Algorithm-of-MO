@@ -74,6 +74,7 @@ namespace Algorithm_of_MO
             string cr = "";
             string f = "";
             string k = "";
+            string zelta = "";
             string dev = "";
             string mu = "";
             //string pom = "";
@@ -128,6 +129,8 @@ namespace Algorithm_of_MO
                 f = setting["F"];
             if (true == setting.ContainsKey("K"))
                 k = setting["K"];
+            if (true == setting.ContainsKey("zelta"))
+                zelta = setting["zelta"];
             if (true == setting.ContainsKey("DEVariant"))
                 dev = setting["DEVariant"];
             if (true == setting.ContainsKey("Mutation"))
@@ -235,11 +238,12 @@ namespace Algorithm_of_MO
             }
 
             string filepath = dirPath + "/Parameter.txt";
-            string[] line1 = { "numberOfVariables " + nov, "numberOfObjectives " + noo, "populationSize " + ps, "maxEvaluations " + me, "iterationsNumber" + itn };
+            string[] line1 = { "numberOfVariables " + nov, "numberOfObjectives " + noo, "populationSize " + ps, "maxEvaluations " + me, "iterationsNumber " + itn };
             string[] line2 = { "T " + t, "delta " + delta, "nr " + nr };
             string[] line3 = { "probabilityOfCrossover " + poc, "distributionIndexOfCrossover " + dioc };
             string[] line4 = { "CR " + cr, "F " + f, "K " + k };
-            string[] line5 = { "probabilityOfMutation " + 1.0 / problem.NumberOfVariables, "distributionIndexOfMutation " + diom, "" };
+            string[] line5 = { "zelta " + zelta };
+            string[] line6 = { "probabilityOfMutation " + 1.0 / problem.NumberOfVariables, "distributionIndexOfMutation " + diom, "" };
             File.AppendAllLines(filepath, line1);
 
             switch (al)
@@ -299,13 +303,18 @@ namespace Algorithm_of_MO
                     crossover = CrossoverFactory.GetCrossoverOperator("DifferentialEvolutionCrossover", parameters);
                     File.AppendAllLines(filepath, line4);
                     break;
+                case "ACOR":
+                    parameters.Add("zelta", double.Parse(zelta));
+                    crossover = CrossoverFactory.GetCrossoverOperator("ACOR", parameters);
+                    File.AppendAllLines(filepath, line5);
+                    break;
             }
 
             parameters = new Dictionary<string, object>();
             parameters.Add("probability", 1.0 / problem.NumberOfVariables);
             parameters.Add("distributionIndex", double.Parse(diom));
             mutation = MutationFactory.GetMutationOperator("PolynomialMutation", parameters);
-            File.AppendAllLines(filepath, line5);
+            File.AppendAllLines(filepath, line6);
             //File.AppendAllText(filepath, "");
 
             // Selection Operator 

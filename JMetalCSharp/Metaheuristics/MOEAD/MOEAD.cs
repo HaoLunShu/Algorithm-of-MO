@@ -189,6 +189,56 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
                         UpdateProblem(child, n, type);
                     }
                 }
+                else if (crossover.ToString() == "JMetalCSharp.Operators.Crossover.ACOR")
+                {
+                    GetStdDev(population);
+
+                    for (int i = 0; i < populationSize; i++)
+                    {
+                        int n = permutation[i]; // or int n = i;
+
+
+                        int type;
+                        double rnd = JMetalRandom.NextDouble();
+
+                        // STEP 2.1. ACOR selection based on probability
+                        if (rnd < delta) // if (rnd < realb)    
+                        {
+                            type = 1;   // myself
+                        }
+                        else
+                        {
+                            type = 2;   // whole neighborhood probability
+                        }
+                        List<int> p = new List<int>();
+                        ACOrSelection(p, n, 1, type);
+
+                        // STEP 2.2. Reproduction
+                        Solution child;
+                        Solution parents;
+
+                        parents = population.Get(p[0]);
+
+                        // Apply DE crossover 
+                        child = (Solution)crossover.Execute(parents);
+
+                        // Apply mutation
+                        mutation.Execute(child);
+
+                        // Evaluation
+                        Problem.Evaluate(child);
+
+                        evaluations++;
+
+                        // STEP 2.3. Repair. Not necessary
+
+                        // STEP 2.4. Update z_
+                        UpdateReference(child);
+
+                        // STEP 2.5. Update of solutions
+                        UpdateProblem(child, n, type);
+                    }
+                }
                 else
                 {
                     // Create the offSpring solutionSet      
@@ -439,13 +489,81 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
 			}
 		}
 
-		/// <summary>
+        /// <summary>
 		/// 
 		/// </summary>
-		/// <param name="indiv">child solution</param>
-		/// <param name="id">the id of current subproblem</param>
-		/// <param name="type">update solutions in - neighborhood (1) or whole population (otherwise)</param>
-		private void UpdateProblem(Solution indiv, int id, int type)
+		/// <param name="list">the set of the indexes of selected mating parents</param>
+		/// <param name="cid">the id of current subproblem</param>
+		/// <param name="size">the number of selected mating parents</param>
+		/// <param name="type">1 - neighborhood; otherwise - whole population</param>
+        public void ACOrSelection(List<int> list, int cid, int size, int type)
+        {
+            int ss;
+            ss = neighborhood[cid].Length;
+            double r;
+            int p = 0;
+            Solution[] parents = new Solution[2];
+            double[] fit = new double[ss];
+            double sum = 0;
+            double[] pro = new double[ss];
+            double a1 = 0;
+            double a2 = 0;
+            int k = 0;
+
+            while (list.Count < size)
+            {
+                if (type == 1)
+                {
+                    p = cid;
+                }
+                else
+                {
+                    for (int i = 0; i < ss; i++)
+                    {
+                        parents[i] = population.Get(neighborhood[cid][i]);
+                        fit[i] = 1 / FitnessFunction(parents[i], lambda[neighborhood[cid][i]]);
+                        sum = sum + fit[i];
+                    }
+                    for (int j = 0; j < ss; j++)
+                    {
+                        pro[j] = fit[j] / sum;
+                    }
+                    r = JMetalRandom.NextDouble();
+                    do
+                    {
+                        a2 = a2 + pro[k];
+                        if (r < a2 && r >= a1)
+                        {
+                            p = neighborhood[cid][k];
+                            break;
+                        }
+                        a1 = a1 + pro[k];
+                    } while (a2 == 1);
+                }
+                bool flag = true;
+                for (int i = 0; i < list.Count; i++)
+                {
+                    if (list[i] == p) // p is in the list
+                    {
+                        flag = false;
+                        break;
+                    }
+                }
+
+                if (flag)
+                {
+                    list.Add(p);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="indiv">child solution</param>
+        /// <param name="id">the id of current subproblem</param>
+        /// <param name="type">update solutions in - neighborhood (1) or whole population (otherwise)</param>
+        private void UpdateProblem(Solution indiv, int id, int type)
 		{
 			int size;
 			int time;
@@ -533,6 +651,25 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
 			}
 			return fitness;
 		}
+
+        private void GetStdDev(SolutionSet s)
+        {
+            double r = 0;
+            for(int i = 0; i < populationSize; i++)
+            {
+                for(int j = 0; j < s.Get(i).NumberOfVariables(); j++)
+                {
+                    for(int k = 0; k < s.Get(i).NumberOfObjectives; k++)
+                    {
+                        for(int l = 0; l < populationSize; l++)
+                        {
+                            r = r + (Math.Abs(s.Get(l).Objective[k] - s.Get(i).Objective[k]) / (populationSize - 1));
+                        }
+                        s.Get(i).stdDev[k] = r;
+                    }
+                }
+            }
+        }
 
 		#endregion
 	}

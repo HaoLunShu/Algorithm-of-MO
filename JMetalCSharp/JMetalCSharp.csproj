@@ -110,6 +110,7 @@
     <Compile Include="Metaheuristics\SMSEMOA\FastSMSEMOA.cs" />
     <Compile Include="Metaheuristics\SMSEMOA\SMSEMOA.cs" />
     <Compile Include="Metaheuristics\SPEA2\SPEA2.cs" />
+    <Compile Include="Operators\Crossover\ACOR.cs" />
     <Compile Include="Operators\Crossover\BLXAlphaCrossover.cs" />
     <Compile Include="Operators\Crossover\Crossover.cs" />
     <Compile Include="Operators\Crossover\CrossoverFactory.cs" />
