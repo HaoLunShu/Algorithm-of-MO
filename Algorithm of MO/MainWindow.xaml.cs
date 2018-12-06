@@ -131,16 +131,18 @@ namespace Algorithm_of_MO
                 k = setting["K"];
             if (true == setting.ContainsKey("zelta"))
                 zelta = setting["zelta"];
-            if (true == setting.ContainsKey("DEVariant"))
-                dev = setting["DEVariant"];
+            //if (true == setting.ContainsKey("DEVariant"))
+            //dev = setting["DEVariant"];
             if (true == setting.ContainsKey("Mutation"))
                 mu = setting["Mutation"];
+            else mu = null;
             //if (true == setting.ContainsKey("probabilityOfMutation"))
                 //pom = setting["probabilityOfMutation"];
             if (true == setting.ContainsKey("distributionIndexOfMutation"))
                 diom = setting["distributionIndexOfMutation"];
             if (true == setting.ContainsKey("Selection"))
                 s = setting["Selection"];
+            else s = null;
             if (true == setting.ContainsKey("QualityIndicator"))
                 qi = setting["QualityIndicator"];
             if (true == setting.ContainsKey("repeatTimes"))
@@ -242,7 +244,7 @@ namespace Algorithm_of_MO
             string[] line2 = { "T " + t, "delta " + delta, "nr " + nr };
             string[] line3 = { "probabilityOfCrossover " + poc, "distributionIndexOfCrossover " + dioc };
             string[] line4 = { "CR " + cr, "F " + f, "K " + k };
-            string[] line5 = { "zelta " + zelta };
+            string[] line5 = { "zelta " + zelta, "" };
             string[] line6 = { "probabilityOfMutation " + 1.0 / problem.NumberOfVariables, "distributionIndexOfMutation " + diom, "" };
             File.AppendAllLines(filepath, line1);
 
@@ -257,6 +259,8 @@ namespace Algorithm_of_MO
                     algorithm.SetInputParameter("delta", double.Parse(delta));
                     algorithm.SetInputParameter("nr", int.Parse(nr));
                     File.AppendAllLines(filepath, line2);
+                    break;
+                default:
                     break;
             }
 
@@ -308,18 +312,37 @@ namespace Algorithm_of_MO
                     crossover = CrossoverFactory.GetCrossoverOperator("ACOR", parameters);
                     File.AppendAllLines(filepath, line5);
                     break;
+                default:
+                    break;
             }
 
-            parameters = new Dictionary<string, object>();
-            parameters.Add("probability", 1.0 / problem.NumberOfVariables);
-            parameters.Add("distributionIndex", double.Parse(diom));
-            mutation = MutationFactory.GetMutationOperator("PolynomialMutation", parameters);
-            File.AppendAllLines(filepath, line6);
-            //File.AppendAllText(filepath, "");
+            switch(mu)
+            {
+                case "PolynomialMutation":
+                    parameters = new Dictionary<string, object>();
+                    parameters.Add("probability", 1.0 / problem.NumberOfVariables);
+                    parameters.Add("distributionIndex", double.Parse(diom));
+                    mutation = MutationFactory.GetMutationOperator("PolynomialMutation", parameters);
+                    File.AppendAllLines(filepath, line6);
+                    break;
+                case null:
+                    break;
+                default:
+                    break;
+            }
 
             // Selection Operator 
-            parameters = null;
-            selection = SelectionFactory.GetSelectionOperator("BinaryTournament2", parameters);
+            switch(s)
+            {
+                case "BinaryTournament2":
+                    parameters = null;
+                    selection = SelectionFactory.GetSelectionOperator("BinaryTournament2", parameters);
+                    break;
+                case null:
+                    break;
+                default:
+                    break;
+            }
 
             // Quality Indicators Operator
             //indicators = new QualityIndicator(problem, "DTLZ1.3D.pf");

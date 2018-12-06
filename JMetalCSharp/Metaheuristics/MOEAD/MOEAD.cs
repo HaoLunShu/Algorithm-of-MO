@@ -1,5 +1,6 @@
 ﻿using JMetalCSharp.Core;
 using JMetalCSharp.Utils;
+using JMetalCSharp.Utils.Wrapper;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -191,7 +192,7 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
                 }
                 else if (crossover.ToString() == "JMetalCSharp.Operators.Crossover.ACOR")
                 {
-                    GetStdDev(population);
+                    GetStdDev(neighborhood);
 
                     for (int i = 0; i < populationSize; i++)
                     {
@@ -502,7 +503,9 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
             ss = neighborhood[cid].Length;
             double r;
             int p = 0;
-            Solution[] parents = new Solution[2];
+            Solution[] parents = new Solution[ss];
+            double[] fitness = new double[ss];
+            int indexOfmin = 0;
             double[] fit = new double[ss];
             double sum = 0;
             double[] pro = new double[ss];
@@ -514,7 +517,16 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
             {
                 if (type == 1)
                 {
-                    p = cid;
+                    for (int i = 0; i < ss; i++)
+                    {
+                        parents[i] = population.Get(neighborhood[cid][i]);
+                        fitness[i] = FitnessFunction(parents[i], lambda[neighborhood[cid][i]]);
+                        if(fitness[i] < FitnessFunction(parents[i], lambda[neighborhood[cid][indexOfmin]]))
+                        {
+                            indexOfmin = i;
+                        }
+                        p = neighborhood[cid][indexOfmin];
+                    }
                 }
                 else
                 {
@@ -652,21 +664,24 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
 			return fitness;
 		}
 
-        private void GetStdDev(SolutionSet s)
+        private void GetStdDev(int[][] n)
         {
             double r = 0;
             for(int i = 0; i < populationSize; i++)
             {
-                for(int j = 0; j < s.Get(i).NumberOfVariables(); j++)
+                for(int j = 0; j < n[i].Length; j++)
                 {
-                    for(int k = 0; k < s.Get(i).NumberOfObjectives; k++)
+                    XReal xTmp1 = new XReal(population.Get(n[i][j]));
+                    for(int k = 0; k < population.Get(n[i][j]).NumberOfVariables(); k++)
                     {
-                        for(int l = 0; l < populationSize; l++)
+                        for(int l = 0; l < n[i].Length; l++)
                         {
-                            r = r + (Math.Abs(s.Get(l).Objective[k] - s.Get(i).Objective[k]) / (populationSize - 1));
+                            XReal xTmp2 = new XReal(population.Get(n[i][l]));
+                            r = r + (Math.Abs(xTmp1.GetValue(k) - xTmp1.GetValue(k)) / (n[i].Length - 1));
                         }
-                        s.Get(i).stdDev[k] = r;
+                        population.Get(n[i][j]).stdDev[k] = r;
                     }
+                    
                 }
             }
         }

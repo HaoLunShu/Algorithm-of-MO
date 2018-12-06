@@ -15,7 +15,7 @@ namespace JMetalCSharp.Operators.Crossover
         /// <summary>
 		/// DEFAULT_CR defines a default CR (crossover operation control) value
 		/// </summary>
-		private static readonly double DEFAULT_ZELTA = 0.5;
+		private static readonly double DEFAULT_ZELTA = 0.85;
 
         private double zelta;
 
@@ -25,6 +25,15 @@ namespace JMetalCSharp.Operators.Crossover
             zelta = DEFAULT_ZELTA;
             Utils.Utils.GetDoubleValueFromParameter(parameters, "zelta", ref zelta);
         }
+
+        /// <summary>
+		/// Valid solution types to apply this operator
+		/// </summary>
+		private static readonly List<Type> VALID_TYPES = new List<Type>()
+        {
+            typeof(RealSolutionType),
+            typeof(ArrayRealSolutionType)
+        };
 
         private Solution DoACOr(Solution parent)
         {
@@ -47,7 +56,7 @@ namespace JMetalCSharp.Operators.Crossover
                 double u1 = JMetalRandom.NextDouble(0, 1);
                 double u2 = JMetalRandom.NextDouble(0, 1);
                 double randStdNormal = Math.Sqrt(-2.0 * Math.Log(u1)) * Math.Sin(2.0 * Math.PI * u2); //random normal(0,1)
-                value = xCurrent.GetValue(j) + current.stdDev[j] * randStdNormal;
+                value = xCurrent.GetValue(j) + zelta * current.stdDev[j] * randStdNormal;
 
                 if (value < xChild.GetLowerBound(j))
                 {
@@ -62,5 +71,32 @@ namespace JMetalCSharp.Operators.Crossover
             }
             return child;
         }
+
+        #region Public Overrides
+
+        /// <summary>
+        /// Executes the operation
+        /// </summary>
+        /// <param name="obj">An object containing an array of two parents</param>
+        /// <returns>An object containing the offSprings</returns>
+        public override object Execute(object obj)
+        {
+            Solution parents = (Solution)obj;
+
+            if (!(VALID_TYPES.Contains(parents.Type.GetType())))
+            {
+                Logger.Log.Error("Exception in " + this.GetType().FullName + ".Execute()");
+                Console.WriteLine("Exception in " + this.GetType().FullName + ".Execute()");
+                throw new Exception("Exception in " + this.GetType().FullName + ".Execute()");
+            }
+
+            Solution offSpring;
+            offSpring = DoACOr(parents);
+
+            return offSpring;
+        }
+
+        #endregion
+
     }
 }
