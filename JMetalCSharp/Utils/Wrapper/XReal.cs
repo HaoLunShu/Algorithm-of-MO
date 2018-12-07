@@ -93,12 +93,32 @@ namespace JMetalCSharp.Utils.Wrapper
 			}
 		}
 
-		/// <summary>
-		/// Gets the lower bound of a encodings.variable
+        /// <summary>
+		/// Gets value of a encodings.variable
 		/// </summary>
 		/// <param name="index">Index of the encodings.variable</param>
-		/// <returns>The lower bound of the encodings.variable</returns>
-		public double GetLowerBound(int index)
+		/// <returns>The value of the encodings.variable</returns>
+		public double GetStdDev(int index)
+        {
+            return solution.stdDev[index];
+        }
+
+        /// <summary>
+        /// Sets the value of a encodings.variable
+        /// </summary>
+        /// <param name="index">Index of the encodings.variable</param>
+        /// <param name="value">Value to be assigned</param>
+        public void SetstdDev(int index, double value)
+        {
+            solution.stdDev[index] = value;
+        }
+
+        /// <summary>
+        /// Gets the lower bound of a encodings.variable
+        /// </summary>
+        /// <param name="index">Index of the encodings.variable</param>
+        /// <returns>The lower bound of the encodings.variable</returns>
+        public double GetLowerBound(int index)
 		{
 			Type type = this.type.GetType();
 			double result = 0;

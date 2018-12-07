@@ -56,7 +56,7 @@ namespace JMetalCSharp.Operators.Crossover
                 double u1 = JMetalRandom.NextDouble(0, 1);
                 double u2 = JMetalRandom.NextDouble(0, 1);
                 double randStdNormal = Math.Sqrt(-2.0 * Math.Log(u1)) * Math.Sin(2.0 * Math.PI * u2); //random normal(0,1)
-                value = xCurrent.GetValue(j) + zelta * current.stdDev[j] * randStdNormal;
+                value = xCurrent.GetValue(j) + zelta * xCurrent.GetStdDev(j) * randStdNormal;
 
                 if (value < xChild.GetLowerBound(j))
                 {

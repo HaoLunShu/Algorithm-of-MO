@@ -142,6 +142,7 @@ namespace JMetalCSharp.Core
 			this.Type = null;
 			this.Variable = null;
 			this.Objective = null;
+            this.stdDev = null;
 		}
 
 		/// <summary>
@@ -168,6 +169,7 @@ namespace JMetalCSharp.Core
 			this.DistanceToSolutionSet = double.PositiveInfinity;
 
 			this.Variable = Type.CreateVariables();
+            this.stdDev = new double[Variable.Length];
 		}
 
 		public Solution(Problem problem, Variable[] variables)
@@ -183,7 +185,8 @@ namespace JMetalCSharp.Core
 			this.DistanceToSolutionSet = double.PositiveInfinity;
 
 			this.Variable = variables;
-		}
+            this.stdDev = new double[variables.Length];
+        }
 
 		public Solution(Solution solution)
 		{
@@ -198,7 +201,7 @@ namespace JMetalCSharp.Core
 				this.Objective[i] = solution.Objective[i];
 			}
 
-			this.Variable = this.Type.CopyVariables(solution.Variable);
+            this.Variable = this.Type.CopyVariables(solution.Variable);
 			this.OverallConstraintViolation = solution.OverallConstraintViolation;
 			this.NumberOfViolatedConstraints = solution.NumberOfViolatedConstraints;
 			this.DistanceToSolutionSet = solution.DistanceToSolutionSet;
@@ -208,6 +211,11 @@ namespace JMetalCSharp.Core
 			this.marked = solution.marked;
 			this.Rank = solution.Rank;
 			this.Location = solution.Location;
+
+            for (int j = 0; j < this.Variable.Length; j++)
+            {
+                this.stdDev[j] = solution.stdDev[j];
+            }
 		}
 
 		#endregion

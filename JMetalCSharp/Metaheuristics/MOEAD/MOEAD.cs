@@ -205,7 +205,7 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
                         // STEP 2.1. ACOR selection based on probability
                         if (rnd < delta) // if (rnd < realb)    
                         {
-                            type = 1;   // myself
+                            type = 1;   // minmum
                         }
                         else
                         {
@@ -220,11 +220,11 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
 
                         parents = population.Get(p[0]);
 
-                        // Apply DE crossover 
+                        // Apply ACOR crossover 
                         child = (Solution)crossover.Execute(parents);
 
                         // Apply mutation
-                        mutation.Execute(child);
+                        // mutation.Execute(child);
 
                         // Evaluation
                         Problem.Evaluate(child);
@@ -237,7 +237,7 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
                         UpdateReference(child);
 
                         // STEP 2.5. Update of solutions
-                        UpdateProblem(child, n, type);
+                        UpdateProblem(child, n, 1);
                     }
                 }
                 else
@@ -672,6 +672,7 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
                 for(int j = 0; j < n[i].Length; j++)
                 {
                     XReal xTmp1 = new XReal(population.Get(n[i][j]));
+                    double[] tmp = new double[population.Get(n[i][j]).NumberOfVariables()];
                     for(int k = 0; k < population.Get(n[i][j]).NumberOfVariables(); k++)
                     {
                         for(int l = 0; l < n[i].Length; l++)
@@ -679,9 +680,8 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
                             XReal xTmp2 = new XReal(population.Get(n[i][l]));
                             r = r + (Math.Abs(xTmp1.GetValue(k) - xTmp1.GetValue(k)) / (n[i].Length - 1));
                         }
-                        population.Get(n[i][j]).stdDev[k] = r;
+                        xTmp1.SetstdDev(k, r);
                     }
-                    
                 }
             }
         }
