@@ -211,6 +211,7 @@ namespace JMetalCSharp.Core
 			this.marked = solution.marked;
 			this.Rank = solution.Rank;
 			this.Location = solution.Location;
+            this.stdDev = new double[this.Variable.Length];
 
             for (int j = 0; j < this.Variable.Length; j++)
             {

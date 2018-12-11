@@ -211,14 +211,12 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
                         {
                             type = 2;   // whole neighborhood probability
                         }
-                        List<int> p = new List<int>();
-                        ACOrSelection(p, n, 1, type);
 
                         // STEP 2.2. Reproduction
                         Solution child;
                         Solution parents;
 
-                        parents = population.Get(p[0]);
+                        parents = population.Get(ACOrSelection(n, type));
 
                         // Apply ACOR crossover 
                         child = (Solution)crossover.Execute(parents);
@@ -497,7 +495,7 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
 		/// <param name="cid">the id of current subproblem</param>
 		/// <param name="size">the number of selected mating parents</param>
 		/// <param name="type">1 - neighborhood; otherwise - whole population</param>
-        public void ACOrSelection(List<int> list, int cid, int size, int type)
+        public int ACOrSelection(int cid, int type)
         {
             int ss;
             ss = neighborhood[cid].Length;
@@ -513,60 +511,45 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
             double a2 = 0;
             int k = 0;
 
-            while (list.Count < size)
+            if (type == 1)
             {
-                if (type == 1)
+                for (int i = 0; i < ss; i++)
                 {
-                    for (int i = 0; i < ss; i++)
+                    parents[i] = population.Get(neighborhood[cid][i]);
+                    fitness[i] = FitnessFunction(parents[i], lambda[neighborhood[cid][0]]);
+                    if(fitness[i] < FitnessFunction(parents[indexOfmin], lambda[neighborhood[cid][0]]))
                     {
-                        parents[i] = population.Get(neighborhood[cid][i]);
-                        fitness[i] = FitnessFunction(parents[i], lambda[neighborhood[cid][i]]);
-                        if(fitness[i] < FitnessFunction(parents[i], lambda[neighborhood[cid][indexOfmin]]))
-                        {
-                            indexOfmin = i;
-                        }
-                        p = neighborhood[cid][indexOfmin];
+                        indexOfmin = i;
                     }
-                }
-                else
-                {
-                    for (int i = 0; i < ss; i++)
-                    {
-                        parents[i] = population.Get(neighborhood[cid][i]);
-                        fit[i] = 1 / FitnessFunction(parents[i], lambda[neighborhood[cid][i]]);
-                        sum = sum + fit[i];
-                    }
-                    for (int j = 0; j < ss; j++)
-                    {
-                        pro[j] = fit[j] / sum;
-                    }
-                    r = JMetalRandom.NextDouble();
-                    do
-                    {
-                        a2 = a2 + pro[k];
-                        if (r < a2 && r >= a1)
-                        {
-                            p = neighborhood[cid][k];
-                            break;
-                        }
-                        a1 = a1 + pro[k];
-                    } while (a2 == 1);
-                }
-                bool flag = true;
-                for (int i = 0; i < list.Count; i++)
-                {
-                    if (list[i] == p) // p is in the list
-                    {
-                        flag = false;
-                        break;
-                    }
-                }
-
-                if (flag)
-                {
-                    list.Add(p);
+                    p = neighborhood[cid][indexOfmin];
                 }
             }
+            else
+            {
+                for (int i = 0; i < ss; i++)
+                {
+                    parents[i] = population.Get(neighborhood[cid][i]);
+                    fit[i] = 1 / FitnessFunction(parents[i], lambda[neighborhood[cid][0]]);
+                    sum = sum + fit[i];
+                }
+                for (int j = 0; j < ss; j++)
+                {
+                    pro[j] = fit[j] / sum;
+                }
+                r = JMetalRandom.NextDouble();
+                do
+                {
+                    a2 = a2 + pro[k];
+                    if (r < a2 && r >= a1)
+                    {
+                        p = neighborhood[cid][k];
+                        break;
+                    }
+                    a1 = a1 + pro[k];
+                } while (a2 == 1);
+            }
+
+            return p;
         }
 
         /// <summary>
@@ -666,22 +649,18 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
 
         private void GetStdDev(int[][] n)
         {
-            double r = 0;
             for(int i = 0; i < populationSize; i++)
             {
-                for(int j = 0; j < n[i].Length; j++)
+                XReal xTmp = new XReal(population.Get(i));
+                for (int k = 0; k < population.Get(i).NumberOfVariables(); k++)
                 {
-                    XReal xTmp1 = new XReal(population.Get(n[i][j]));
-                    double[] tmp = new double[population.Get(n[i][j]).NumberOfVariables()];
-                    for(int k = 0; k < population.Get(n[i][j]).NumberOfVariables(); k++)
+                    double r = 0;
+                    for(int l = 0; l < n[i].Length; l++)
                     {
-                        for(int l = 0; l < n[i].Length; l++)
-                        {
-                            XReal xTmp2 = new XReal(population.Get(n[i][l]));
-                            r = r + (Math.Abs(xTmp1.GetValue(k) - xTmp1.GetValue(k)) / (n[i].Length - 1));
-                        }
-                        xTmp1.SetstdDev(k, r);
+                        XReal xTmp1 = new XReal(population.Get(n[i][l]));
+                        r = r + (Math.Abs(xTmp1.GetValue(k) - xTmp.GetValue(k)) / (n[i].Length - 1));
                     }
+                    xTmp.SetstdDev(k, r);
                 }
             }
         }
