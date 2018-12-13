@@ -665,6 +665,41 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
             }
         }
 
-		#endregion
-	}
+        #endregion
+
+        #region Test Methods
+        public void set()
+        {
+            populationSize = 10;
+            t = 2;
+            population = new SolutionSet(populationSize);
+            indArray = new Solution[Problem.NumberOfObjectives];
+            neighborhood = new int[populationSize][];
+            for (int i = 0; i < populationSize; i++)
+            {
+                neighborhood[i] = new int[t];
+            }
+
+            z = new double[Problem.NumberOfObjectives];
+
+            lambda = new double[populationSize][];
+            for (int i = 0; i < populationSize; i++)
+            {
+                lambda[i] = new double[Problem.NumberOfObjectives];
+            }
+
+            //Step 1. Initialization
+            //Step 1.1 Compute euclidean distances between weight vectors and find T
+            InitUniformWeight();
+
+            InitNeighborhood();
+
+            //Step 1.2 Initialize population
+            InitPoputalion();
+
+            //Step 1.3 Initizlize z
+            InitIdealPoint();
+        }
+        #endregion
+    }
 }
