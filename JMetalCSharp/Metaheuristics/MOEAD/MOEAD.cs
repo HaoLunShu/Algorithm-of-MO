@@ -493,14 +493,13 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
 		/// </summary>
 		/// <param name="list">the set of the indexes of selected mating parents</param>
 		/// <param name="cid">the id of current subproblem</param>
-		/// <param name="size">the number of selected mating parents</param>
-		/// <param name="type">1 - neighborhood; otherwise - whole population</param>
+		/// <param name="type">1 - minimum; otherwise - whole neighborhood probability</param>
         public int ACOrSelection(int cid, int type)
         {
             int ss;
             ss = neighborhood[cid].Length;
             double r;
-            int p = 0;
+            int p = neighborhood[cid][0];
             Solution[] parents = new Solution[ss];
             double[] fitness = new double[ss];
             int indexOfmin = 0;
@@ -509,15 +508,14 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
             double[] pro = new double[ss];
             double a1 = 0;
             double a2 = 0;
-            int k = 0;
 
             if (type == 1)
             {
                 for (int i = 0; i < ss; i++)
                 {
                     parents[i] = population.Get(neighborhood[cid][i]);
-                    fitness[i] = FitnessFunction(parents[i], lambda[neighborhood[cid][0]]);
-                    if(fitness[i] < FitnessFunction(parents[indexOfmin], lambda[neighborhood[cid][0]]))
+                    fitness[i] = FitnessFunction(parents[i], lambda[cid]);
+                    if(fitness[i] < FitnessFunction(population.Get(p), lambda[cid]))
                     {
                         indexOfmin = i;
                     }
@@ -529,7 +527,7 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
                 for (int i = 0; i < ss; i++)
                 {
                     parents[i] = population.Get(neighborhood[cid][i]);
-                    fit[i] = 1 / FitnessFunction(parents[i], lambda[neighborhood[cid][0]]);
+                    fit[i] = 1 / FitnessFunction(parents[i], lambda[cid]);
                     sum = sum + fit[i];
                 }
                 for (int j = 0; j < ss; j++)
@@ -537,7 +535,7 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
                     pro[j] = fit[j] / sum;
                 }
                 r = JMetalRandom.NextDouble();
-                do
+                for(int k = 0; k < pro.Length; k++)
                 {
                     a2 = a2 + pro[k];
                     if (r < a2 && r >= a1)
@@ -546,7 +544,7 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
                         break;
                     }
                     a1 = a1 + pro[k];
-                } while (a2 == 1);
+                }
             }
 
             return p;
@@ -699,6 +697,48 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
 
             //Step 1.3 Initizlize z
             InitIdealPoint();
+        }
+
+        public double[] countFitness(SolutionSet s, double[][] l, double[] z)
+        {
+            double[] f = new double[s.Size()];
+            if (functionType == "_TCHE1")
+            {
+                for(int i = 0; i < s.Size(); i++)
+                {
+                    Solution so = s.Get(i);
+                    double maxFun = -1.0e+30;
+
+                    for (int n = 0; n < Problem.NumberOfObjectives; n++)
+                    {
+                        double diff = Math.Abs(so.Objective[n] - z[n]);
+
+                        double feval;
+                        if (l[i][n] == 0)
+                        {
+                            feval = 0.0001 * diff;
+                        }
+                        else
+                        {
+                            feval = diff * l[i][n];
+                        }
+                        if (feval > maxFun)
+                        {
+                            maxFun = feval;
+                        }
+                    }
+                    f[i] = maxFun;
+                }
+            }
+            else
+            {
+                Logger.Log.Error("MOEAD.FitnessFunction: unknown type " + functionType);
+                Console.WriteLine("MOEAD.FitnessFunction: unknown type " + functionType);
+                Environment.Exit(-1);
+                throw new Exception("MOEAD.FitnessFunction: unknown type " + functionType);
+
+            }
+            return f;
         }
         #endregion
     }

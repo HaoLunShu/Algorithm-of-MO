@@ -23,10 +23,12 @@ namespace JMetalCSharp.Metaheuristics.MOEAD.Tests
             SolutionSet population = new SolutionSet(populationSize);
             MOEAD moead = new MOEAD(problem);
             int p = 0;
+            int expectedp = 0;
             double[][] expectedLambda = new double[10][];
             double[][] dis = new double[10][];
             double[][] expectedneigh = new double[10][];
-            double[] z = new double[2];
+            double[] expectedz = new double[2];
+            double[] expectedfitness = new double[10];
 
             for (int i = 0; i < populationSize; i++)
             {
@@ -54,7 +56,7 @@ namespace JMetalCSharp.Metaheuristics.MOEAD.Tests
 
             for(int i = 0; i < 2; i++)
             {
-                z[i] = 1.0e+30;
+                expectedz[i] = 1.0e+30;
             }
 
             for(int i = 0; i < populationSize; i++)
@@ -62,16 +64,14 @@ namespace JMetalCSharp.Metaheuristics.MOEAD.Tests
                 Solution temp = population.Get(i);
                 for(int j = 0; j < 2; j++)
                 {
-                    if(temp.Objective[j]  < z[j])
+                    if(temp.Objective[j]  < expectedz[j])
                     {
-                        z[j] = temp.Objective[j];
+                        expectedz[j] = temp.Objective[j];
                     }
                 }
             }
-            /*Algorithm algorithm = new JMetalCSharp.Metaheuristics.MOEAD.MOEAD(problem);
-            algorithm.SetInputParameter("T", 20);
-            algorithm.SetInputParameter("delta", 0.5);
-            algorithm.SetInputParameter("nr", 2);*/
+
+            expectedfitness = moead.countFitness(population, expectedLambda, expectedz);
 
             moead.set();
 
@@ -81,14 +81,6 @@ namespace JMetalCSharp.Metaheuristics.MOEAD.Tests
             }
 
             Console.WriteLine(p);
-
-            /*algorithm.SetInputParameter("populationSize", 100);
-            algorithm.SetInputParameter("iterationsNumber", 1);
-            algorithm.SetInputParameter("dataDirectory", "Data/Parameters/Weight");
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("zelta", 0.85);
-            Operator crossover = CrossoverFactory.GetCrossoverOperator("ACOR", parameters);
-            algorithm.AddOperator("crossover", crossover);*/
 
             Assert.Fail();
         }
@@ -109,6 +101,11 @@ namespace JMetalCSharp.Metaheuristics.MOEAD.Tests
             }
 
             return array;
+        }
+
+        public int selection(double[] n, double[] f)
+        {
+            return 0;
         }
     }
 }

@@ -497,6 +497,8 @@ namespace Algorithm_of_MO
                 File.AppendAllText(filepath + "/finalQI" + ".txt", "IQR " + s[k] + ": " + iqr[k] + "\n");
             }
 
+            File.AppendAllText(filepath + "/finalQI" + ".txt", "\n");
+
         }
 
         private double[] SD(int[] Time, double[,] Q, int[] SP)

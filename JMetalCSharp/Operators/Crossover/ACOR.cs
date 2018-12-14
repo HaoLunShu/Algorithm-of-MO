@@ -77,7 +77,7 @@ namespace JMetalCSharp.Operators.Crossover
         /// <summary>
         /// Executes the operation
         /// </summary>
-        /// <param name="obj">An object containing an array of two parents</param>
+        /// <param name="obj">An object containing one parent</param>
         /// <returns>An object containing the offSprings</returns>
         public override object Execute(object obj)
         {
