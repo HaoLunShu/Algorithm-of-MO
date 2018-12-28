@@ -15,17 +15,17 @@ namespace JMetalCSharp.Operators.Crossover
         /// <summary>
 		/// DEFAULT_CR defines a default CR (crossover operation control) value
 		/// </summary>
-		private static readonly double DEFAULT_ZELTA = 0.85;
+		private static readonly double DEFAULT_ZETA = 0.85;
 
-        private double zelta;
+        private double zeta;
 
         private double[] randStdNormal;
 
         public ACOR(Dictionary<string, object> parameters)
             : base(parameters)
         {
-            zelta = DEFAULT_ZELTA;
-            Utils.Utils.GetDoubleValueFromParameter(parameters, "zelta", ref zelta);
+            zeta = DEFAULT_ZETA;
+            Utils.Utils.GetDoubleValueFromParameter(parameters, "zeta", ref zeta);
         }
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace JMetalCSharp.Operators.Crossover
                 double u1 = JMetalRandom.NextDouble(0, 1);
                 double u2 = JMetalRandom.NextDouble(0, 1);
                 randStdNormal[j] = Math.Sqrt(-2.0 * Math.Log(u1)) * Math.Sin(2.0 * Math.PI * u2); //random normal(0,1)
-                value = xCurrent.GetValue(j) + zelta * xCurrent.GetStdDev(j) * randStdNormal[j];
+                value = xCurrent.GetValue(j) + zeta * xCurrent.GetStdDev(j) * randStdNormal[j];
 
                 if (value < xChild.GetLowerBound(j))
                 {

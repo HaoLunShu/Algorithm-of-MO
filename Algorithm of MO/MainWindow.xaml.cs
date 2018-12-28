@@ -74,7 +74,7 @@ namespace Algorithm_of_MO
             string cr = "";
             string f = "";
             string k = "";
-            string zelta = "";
+            string zeta = "";
             //string dev = "";
             string mu = "";
             //string pom = "";
@@ -129,8 +129,8 @@ namespace Algorithm_of_MO
                 f = setting["F"];
             if (true == setting.ContainsKey("K"))
                 k = setting["K"];
-            if (true == setting.ContainsKey("zelta"))
-                zelta = setting["zelta"];
+            if (true == setting.ContainsKey("zeta"))
+                zeta = setting["zeta"];
             //if (true == setting.ContainsKey("DEVariant"))
             //dev = setting["DEVariant"];
             if (true == setting.ContainsKey("Mutation"))
@@ -244,7 +244,7 @@ namespace Algorithm_of_MO
             string[] line2 = { "T " + t, "delta " + delta, "nr " + nr };
             string[] line3 = { "probabilityOfCrossover " + poc, "distributionIndexOfCrossover " + dioc };
             string[] line4 = { "CR " + cr, "F " + f, "K " + k };
-            string[] line5 = { "zelta " + zelta, "" };
+            string[] line5 = { "zeta " + zeta, "" };
             string[] line6 = { "probabilityOfMutation " + 1.0 / problem.NumberOfVariables, "distributionIndexOfMutation " + diom, "" };
             File.AppendAllLines(filepath, line1);
 
@@ -308,7 +308,7 @@ namespace Algorithm_of_MO
                     File.AppendAllLines(filepath, line4);
                     break;
                 case "ACOR":
-                    parameters.Add("zelta", double.Parse(zelta));
+                    parameters.Add("zeta", double.Parse(zeta));
                     crossover = CrossoverFactory.GetCrossoverOperator("ACOR", parameters);
                     File.AppendAllLines(filepath, line5);
                     break;

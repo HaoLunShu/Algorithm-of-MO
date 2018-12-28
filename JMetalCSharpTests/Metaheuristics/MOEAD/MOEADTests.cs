@@ -25,7 +25,7 @@ namespace JMetalCSharp.Metaheuristics.MOEAD.Tests
             //Operator crossover = null;
             ACOR crossover = null;
             Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("zelta", 0.85);
+            parameters.Add("zeta", 0.85);
             crossover = new ACOR(parameters);
             int p = 0;
             int[] expectedp = new int[11] { 1, 1, 2, 3, 4, 4, 5, 6, 8, 8, 9 };
