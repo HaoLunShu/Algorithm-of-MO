@@ -19,6 +19,8 @@ namespace JMetalCSharp.Operators.Crossover
 
         private double zelta;
 
+        private double[] randStdNormal;
+
         public ACOR(Dictionary<string, object> parameters)
             : base(parameters)
         {
@@ -48,6 +50,8 @@ namespace JMetalCSharp.Operators.Crossover
 
             int numberOfVariables = xCurrent.GetNumberOfDecisionVariables();
 
+            randStdNormal = new double[numberOfVariables];
+
             for (int j = 0; j < numberOfVariables; j++)
             {
                 double value;
@@ -55,16 +59,18 @@ namespace JMetalCSharp.Operators.Crossover
 
                 double u1 = JMetalRandom.NextDouble(0, 1);
                 double u2 = JMetalRandom.NextDouble(0, 1);
-                double randStdNormal = Math.Sqrt(-2.0 * Math.Log(u1)) * Math.Sin(2.0 * Math.PI * u2); //random normal(0,1)
-                value = xCurrent.GetValue(j) + zelta * xCurrent.GetStdDev(j) * randStdNormal;
+                randStdNormal[j] = Math.Sqrt(-2.0 * Math.Log(u1)) * Math.Sin(2.0 * Math.PI * u2); //random normal(0,1)
+                value = xCurrent.GetValue(j) + zelta * xCurrent.GetStdDev(j) * randStdNormal[j];
 
                 if (value < xChild.GetLowerBound(j))
                 {
                     value = xChild.GetLowerBound(j);
+                    //value = JMetalRandom.NextDouble(xChild.GetLowerBound(j), xChild.GetUpperBound(j));
                 }
                 if (value > xChild.GetUpperBound(j))
                 {
                     value = xChild.GetUpperBound(j);
+                    //value = JMetalRandom.NextDouble(xChild.GetLowerBound(j), xChild.GetUpperBound(j));
                 }
 
                 xChild.SetValue(j, value);
@@ -97,6 +103,11 @@ namespace JMetalCSharp.Operators.Crossover
         }
 
         #endregion
+
+        public object get()
+        {
+            return this.randStdNormal;
+        }
 
     }
 }

@@ -192,11 +192,13 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
                 }
                 else if (crossover.ToString() == "JMetalCSharp.Operators.Crossover.ACOR")
                 {
-                    GetStdDev(neighborhood);
 
                     for (int i = 0; i < populationSize; i++)
                     {
-                        int n = permutation[i]; // or int n = i;
+                        GetStdDev(neighborhood);
+
+                        int n = permutation[i];
+                        // or int n = i;
 
 
                         int type;
@@ -488,6 +490,8 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
 			}
 		}
 
+        //double[] pro = new double[2];
+
         /// <summary>
 		/// 
 		/// </summary>
@@ -666,9 +670,17 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
         #endregion
 
         #region Test Methods
-        public void set()
+        public void Set(SolutionSet s, int[][] n, double[][] l, double[] z)
         {
-            populationSize = 10;
+            this.population = s;
+            this.neighborhood = n;
+            this.z = z;
+            this.lambda = l;
+        }
+
+        public void AutoSet(SolutionSet s)
+        {
+            populationSize = 11;
             t = 2;
             population = new SolutionSet(populationSize);
             indArray = new Solution[Problem.NumberOfObjectives];
@@ -692,53 +704,32 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
 
             InitNeighborhood();
 
-            //Step 1.2 Initialize population
-            InitPoputalion();
+            this.population = s;
 
             //Step 1.3 Initizlize z
             InitIdealPoint();
+
+            GetStdDev(neighborhood);
         }
 
-        public double[] countFitness(SolutionSet s, double[][] l, double[] z)
+        public object Get(string a)
         {
-            double[] f = new double[s.Size()];
-            if (functionType == "_TCHE1")
-            {
-                for(int i = 0; i < s.Size(); i++)
-                {
-                    Solution so = s.Get(i);
-                    double maxFun = -1.0e+30;
+            if (a == "solutionset")
+                return population;
+            if (a == "neighborhood")
+                return neighborhood;
+            if (a == "z")
+                return z;
+            if (a == "lambda")
+                return lambda;
+            /*if (a == "probability")
+                return pro;*/
+            return 0;
+        }
 
-                    for (int n = 0; n < Problem.NumberOfObjectives; n++)
-                    {
-                        double diff = Math.Abs(so.Objective[n] - z[n]);
-
-                        double feval;
-                        if (l[i][n] == 0)
-                        {
-                            feval = 0.0001 * diff;
-                        }
-                        else
-                        {
-                            feval = diff * l[i][n];
-                        }
-                        if (feval > maxFun)
-                        {
-                            maxFun = feval;
-                        }
-                    }
-                    f[i] = maxFun;
-                }
-            }
-            else
-            {
-                Logger.Log.Error("MOEAD.FitnessFunction: unknown type " + functionType);
-                Console.WriteLine("MOEAD.FitnessFunction: unknown type " + functionType);
-                Environment.Exit(-1);
-                throw new Exception("MOEAD.FitnessFunction: unknown type " + functionType);
-
-            }
-            return f;
+        public double Get(int i, int j)
+        {
+            return population.Get(i).stdDev[j];
         }
         #endregion
     }

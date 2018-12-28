@@ -120,12 +120,14 @@ namespace JMetalCSharp.Operators.Crossover
 
 						if (value < xChild.GetLowerBound(j))
 						{
-							value = xChild.GetLowerBound(j);
+                            value = xChild.GetLowerBound(j);
+                            //value = JMetalRandom.NextDouble(xChild.GetLowerBound(j), xChild.GetUpperBound(j));
 						}
 						if (value > xChild.GetUpperBound(j))
 						{
-							value = xChild.GetUpperBound(j);
-						}
+                            value = xChild.GetUpperBound(j);
+                            //value = JMetalRandom.NextDouble(xChild.GetLowerBound(j), xChild.GetUpperBound(j));
+                        }
 
 						xChild.SetValue(j, value);
 					}

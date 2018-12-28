@@ -75,7 +75,7 @@ namespace Algorithm_of_MO
             string f = "";
             string k = "";
             string zelta = "";
-            string dev = "";
+            //string dev = "";
             string mu = "";
             //string pom = "";
             string diom = "";
