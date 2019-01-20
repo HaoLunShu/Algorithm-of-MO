@@ -667,7 +667,9 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
                     for(int l = 0; l < n[i].Length; l++)
                     {
                         XReal xTmp1 = new XReal(population.Get(n[i][l]));
-                        r = r + (Math.Abs(xTmp1.GetValue(k) - xTmp.GetValue(k)) / (n[i].Length - 1));
+                        double abs = Math.Abs(xTmp1.GetValue(k) - xTmp.GetValue(k));
+                        //if (abs < Math.Abs(xTmp.GetUpperBound(k) - xTmp.GetLowerBound(k)) / n[i].Length)
+                            r = r + (abs / (n[i].Length - 1));
                     }
                     xTmp.SetstdDev(k, r);
                 }
