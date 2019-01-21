@@ -23,10 +23,15 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
 		/// </summary>
 		private double[] z;
 
-		/// <summary>
-		/// Lambda vectors
+        /// <summary>
+		/// Z nad vector (ideal point)
 		/// </summary>
-		private double[][] lambda;
+		private double[] znad;
+
+        /// <summary>
+        /// Lambda vectors
+        /// </summary>
+        private double[][] lambda;
 
 		/// <summary>
 		/// neighbour size
@@ -431,6 +436,7 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
 			for (int i = 0; i < Problem.NumberOfObjectives; i++)
 			{
 				z[i] = 1.0e+30;
+                znad[i] = 1.0e-30;
 				indArray[i] = new Solution(Problem);
 				Problem.Evaluate(indArray[i]);
 				evaluations++;
@@ -452,7 +458,11 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
 
 					indArray[n] = individual;
 				}
-			}
+                if (individual.Objective[n] > znad[n])
+                {
+                    znad[n] = individual.Objective[n];
+                }
+            }
 		}
 
 		/// <summary>
@@ -626,7 +636,7 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
 
 				for (int n = 0; n < Problem.NumberOfObjectives; n++)
 				{
-					double diff = Math.Abs(individual.Objective[n] - z[n]);
+					double diff = Math.Abs((individual.Objective[n] - z[n]) / (znad[n] - z[n]));
 
 					double feval;
 					if (lambda[n] == 0)
