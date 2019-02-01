@@ -44,14 +44,6 @@ namespace JMetalCSharp.Utils.Wrapper
 			if (type == typeof(RealSolutionType))
 			{
 				result = ((Real)solution.Variable[index]).Value;
-                /*if(GetLowerBound(index) != 0)
-                {
-                    result = (result + GetUpperBound(index)) / (GetUpperBound(index) - GetLowerBound(index));
-                }
-                if (GetUpperBound(index) != 1)
-                {
-                    result = (result + GetUpperBound(index)) / (GetUpperBound(index) - GetLowerBound(index));
-                }*/
             }
 			else if (type == typeof(BinaryRealSolutionType))
 			{
