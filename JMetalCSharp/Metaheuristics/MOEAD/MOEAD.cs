@@ -781,8 +781,8 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
             double[] probability = new double[sort.Count];
             for(int i = 0; i < sort.Count; i++)
             {
-                Omega[i] = 1 / (0.1 * sort.Count * Math.Pow(2 * Math.PI, 1 / 2)) * Math.Exp(Math.Pow(Array.IndexOf(sort.
-                    Keys.ToArray(), tmp.ElementAt(i)) - 1, 2) / 2 * Math.Pow(0.1 * sort.Count, 2));
+                Omega[i] = 1 / (0.5 * sort.Count * Math.Pow(2 * Math.PI, 1 / 2)) * Math.Exp(Math.Pow(Array.IndexOf(sort.
+                    Keys.ToArray(), tmp.ElementAt(i)) - 1, 2) / 2 * Math.Pow(0.5 * sort.Count, 2));
             }
             for (int i = 0; i < sort.Count; i++)
             {
