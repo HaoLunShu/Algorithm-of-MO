@@ -228,7 +228,7 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
                         Solution child;
                         Solution parents;
 
-                        parents = population.Get(ACOrSelection3(n, type));
+                        parents = population.Get(ACOrSelection2(n, type));
 
                         // Apply ACOR crossover 
                         child = (Solution)crossover.Execute(parents);
@@ -527,13 +527,13 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
             int p = neighborhood[cid][0];
             Solution[] parents = new Solution[ss];
             double[] fitness = new double[ss];
-            int indexOfmin = 0;
+            //int indexOfmin = 0;
             double sum = 0;
             double[] pro = new double[ss];
             double a1 = 0;
             double a2 = 0;
 
-            if (type == 1)
+            /* if (type == 1)
             {
                 for (int i = 0; i < ss; i++)
                 {
@@ -545,9 +545,9 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
                     }
                     p = neighborhood[cid][indexOfmin];
                 }
-            }
+           }
             else
-            {
+            {*/
                 for (int i = 0; i < ss; i++)
                 {
                     parents[i] = population.Get(neighborhood[cid][i]);
@@ -569,7 +569,7 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
                     }
                     a1 = a1 + pro[k];
                 }
-            }
+            //}
 
             return p;
         }
