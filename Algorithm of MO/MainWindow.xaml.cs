@@ -62,7 +62,6 @@ namespace Algorithm_of_MO
             string noo = "";
             string al = "";
             string ps = "";
-            string me = "";
             string itn = "";
             string dad = "";
             string t = "";
@@ -76,6 +75,7 @@ namespace Algorithm_of_MO
             string k = "";
             string zeta = "";
             //string dev = "";
+            string q = "";
             string mu = "";
             //string pom = "";
             string diom = "";
@@ -105,8 +105,6 @@ namespace Algorithm_of_MO
                 al = setting["algorithm"];
             if (true == setting.ContainsKey("populationSize"))
                 ps = setting["populationSize"];
-            if (true == setting.ContainsKey("maxEvaluations"))
-                me = setting["maxEvaluations"];
             if (true == setting.ContainsKey("iterationsNumber"))
                 itn = setting["iterationsNumber"];
             if (true == setting.ContainsKey("dataDirectory"))
@@ -133,6 +131,8 @@ namespace Algorithm_of_MO
                 zeta = setting["zeta"];
             //if (true == setting.ContainsKey("DEVariant"))
             //dev = setting["DEVariant"];
+            if (true == setting.ContainsKey("q"))
+                q = setting["q"];
             if (true == setting.ContainsKey("Mutation"))
                 mu = setting["Mutation"];
             else mu = null;
@@ -240,11 +240,11 @@ namespace Algorithm_of_MO
             }
 
             string filepath = dirPath + "/Parameter.txt";
-            string[] line1 = { "numberOfVariables " + nov, "numberOfObjectives " + noo, "populationSize " + ps, "maxEvaluations " + me, "iterationsNumber " + itn };
+            string[] line1 = { "numberOfVariables " + nov, "numberOfObjectives " + noo, "populationSize " + ps, "iterationsNumber " + itn };
             string[] line2 = { "T " + t, "delta " + delta, "nr " + nr };
             string[] line3 = { "probabilityOfCrossover " + poc, "distributionIndexOfCrossover " + dioc };
             string[] line4 = { "CR " + cr, "F " + f, "K " + k };
-            string[] line5 = { "zeta " + zeta, "" };
+            string[] line5 = { "zeta " + zeta, "q " + q, "" };
             string[] line6 = { "probabilityOfMutation " + 1.0 / problem.NumberOfVariables, "distributionIndexOfMutation " + diom, "" };
             File.AppendAllLines(filepath, line1);
 
@@ -281,7 +281,7 @@ namespace Algorithm_of_MO
 
             // Algorithm parameters
             algorithm.SetInputParameter("populationSize", int.Parse(ps));
-            algorithm.SetInputParameter("maxEvaluations", int.Parse(me));
+            algorithm.SetInputParameter("q", double.Parse(q));
             algorithm.SetInputParameter("iterationsNumber", int.Parse(itn));
 
             algorithm.SetInputParameter("dataDirectory", "Data/Parameters/Weight");
