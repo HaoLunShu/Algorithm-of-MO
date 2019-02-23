@@ -233,12 +233,12 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
                         if (rnd < delta) // if (rnd < realb)    
                         {
                             type = 1;   // minmum
-                            parents = population.Get(ACOrSelection2(n, type, pro_T));
+                            //parents = population.Get(ACOrSelection2(n, type, pro_T));
                         }
                         else
                         {
                             type = 2;   // whole neighborhood probability
-                            parents = population.Get(ACOrSelection2(n, type, pro_A));
+                            //parents = population.Get(ACOrSelection2(n, type, pro_A));
                         }
                         GetStdDev(neighborhood);
                         //GetStdDev1(neighborhood, type);
@@ -249,7 +249,8 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
                         // STEP 2.2. Reproduction
                         Solution child;
 
-                        ////parents = population.Get(ACOrSelection(n, type));
+                        parents = population.Get(ACOrSelection(n, type));
+                        //parents = population.Get(p[0]);
 
                         // Apply ACOR crossover 
                         child = (Solution)crossover.Execute(parents);

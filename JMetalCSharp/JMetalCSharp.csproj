@@ -123,6 +123,7 @@
     <Compile Include="Operators\LocalSearch\LocalSearch.cs" />
     <Compile Include="Operators\LocalSearch\LocalSearchFactory.cs" />
     <Compile Include="Operators\LocalSearch\MutationLocalSearch.cs" />
+    <Compile Include="Operators\Mutation\BoxMuller.cs" />
     <Compile Include="Operators\Mutation\BitFlipMutation.cs" />
     <Compile Include="Operators\Mutation\Mutation.cs" />
     <Compile Include="Operators\Mutation\MutationFactory.cs" />

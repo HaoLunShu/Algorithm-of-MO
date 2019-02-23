@@ -312,6 +312,8 @@ namespace Algorithm_of_MO
                     crossover = CrossoverFactory.GetCrossoverOperator("ACOR", parameters);
                     File.AppendAllLines(filepath, line5);
                     break;
+                case null:
+                    break;
                 default:
                     break;
             }
@@ -323,6 +325,12 @@ namespace Algorithm_of_MO
                     parameters.Add("probability", 1.0 / problem.NumberOfVariables);
                     parameters.Add("distributionIndex", double.Parse(diom));
                     mutation = MutationFactory.GetMutationOperator("PolynomialMutation", parameters);
+                    File.AppendAllLines(filepath, line6);
+                    break;
+                case "BoxMuller":
+                    parameters.Add("zeta", double.Parse(zeta));
+                    parameters.Add("probability", 1.0 / problem.NumberOfVariables);
+                    crossover = MutationFactory.GetMutationOperator("BoxMuller", parameters);
                     File.AppendAllLines(filepath, line6);
                     break;
                 case null:
