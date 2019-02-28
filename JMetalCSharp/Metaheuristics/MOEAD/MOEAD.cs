@@ -216,6 +216,7 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
                 }
                 else if (crossover.ToString() == "JMetalCSharp.Operators.Crossover.ACOR")
                 {
+                    Solution[] parents = new Solution[2];
 
                     for (int i = 0; i < populationSize; i++)
                     {
@@ -226,8 +227,6 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
 
                         int type;
                         double rnd = JMetalRandom.NextDouble();
-
-                        Solution parents;
 
                         // STEP 2.1. ACOR selection based on probability
                         if (rnd < delta) // if (rnd < realb)    
@@ -249,8 +248,12 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
                         // STEP 2.2. Reproduction
                         Solution child;
 
-                        parents = population.Get(ACOrSelection(n, type));
+                        parents[0] = population.Get(ACOrSelection(n, type));
+                        parents[1] = population.Get(n);
                         //parents = population.Get(p[0]);
+
+                        // Apply ACOR crossover 
+                        child = (Solution)crossover.Execute(parents);
 
                         // Apply ACOR crossover 
                         child = (Solution)crossover.Execute(parents);

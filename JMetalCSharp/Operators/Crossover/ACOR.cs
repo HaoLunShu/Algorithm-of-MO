@@ -37,15 +37,18 @@ namespace JMetalCSharp.Operators.Crossover
             typeof(ArrayRealSolutionType)
         };
 
-        private Solution DoACOr(Solution parent)
+        private Solution DoACOr(Solution parent1, Solution parent2)
         {
-            Solution current = new Solution(parent);
+            Solution current = new Solution(parent1);
 
             Solution child;
 
             child = new Solution(current);
 
+            Solution refer = new Solution(parent2);
+
             XReal xCurrent = new XReal(current);
+            XReal xRefer = new XReal(refer);
             XReal xChild = new XReal(child);
 
             int numberOfVariables = xCurrent.GetNumberOfDecisionVariables();
@@ -87,9 +90,17 @@ namespace JMetalCSharp.Operators.Crossover
         /// <returns>An object containing the offSprings</returns>
         public override object Execute(object obj)
         {
-            Solution parents = (Solution)obj;
+            Solution[] parents = (Solution[])obj;
 
-            if (!(VALID_TYPES.Contains(parents.Type.GetType())))
+            if (parents.Length != 2)
+            {
+                Logger.Log.Error("Exception in " + this.GetType().FullName + ".Execute()");
+                Console.WriteLine("Exception in " + this.GetType().FullName + ".Execute()");
+                throw new Exception("Exception in " + this.GetType().FullName + ".Execute()");
+            }
+
+            if (!(VALID_TYPES.Contains(parents[0].Type.GetType())
+                    && VALID_TYPES.Contains(parents[1].Type.GetType())))
             {
                 Logger.Log.Error("Exception in " + this.GetType().FullName + ".Execute()");
                 Console.WriteLine("Exception in " + this.GetType().FullName + ".Execute()");
@@ -97,7 +108,7 @@ namespace JMetalCSharp.Operators.Crossover
             }
 
             Solution offSpring;
-            offSpring = DoACOr(parents);
+            offSpring = DoACOr(parents[0], parents[1]);
 
             return offSpring;
         }
