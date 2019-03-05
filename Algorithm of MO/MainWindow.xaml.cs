@@ -244,8 +244,10 @@ namespace Algorithm_of_MO
             string[] line2 = { "T " + t, "delta " + delta, "nr " + nr };
             string[] line3 = { "probabilityOfCrossover " + poc, "distributionIndexOfCrossover " + dioc };
             string[] line4 = { "CR " + cr, "F " + f, "K " + k };
-            string[] line5 = { "zeta " + zeta, "q " + q, "" };
+            //string[] line5 = { "zeta " + zeta, "q " + q, "" };
             string[] line6 = { "probabilityOfMutation " + 1.0 / problem.NumberOfVariables, "distributionIndexOfMutation " + diom, "" };
+            string[] line5 = { "zeta " + zeta, "q " + q };
+            //string[] line6 = { "probabilityOfMutation " + 0.2, "distributionIndexOfMutation " + diom, "" };
             File.AppendAllLines(filepath, line1);
 
             switch (al)
@@ -323,6 +325,7 @@ namespace Algorithm_of_MO
                 case "PolynomialMutation":
                     parameters = new Dictionary<string, object>();
                     parameters.Add("probability", 1.0 / problem.NumberOfVariables);
+                    //parameters.Add("probability", 0.2);
                     parameters.Add("distributionIndex", double.Parse(diom));
                     mutation = MutationFactory.GetMutationOperator("PolynomialMutation", parameters);
                     File.AppendAllLines(filepath, line6);

@@ -134,7 +134,7 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
             pro_T = GerPro(t);
             pro_A = GerPro(populationSize);
 
-            /*string dir = "Result/MOEAD_ACOR/ZDT4_Real/Record/2nd";
+            /**/string dir = "Result/MOEAD_ACOR/ZDT4_Real/Record/Replace/3nd_nr15_zeta0.9";
             if (Directory.Exists(dir))
             {
                 Console.WriteLine("The directory {0} already exists.", dir);
@@ -143,7 +143,7 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
             {
                 Directory.CreateDirectory(dir);
                 Console.WriteLine("The directory {0} was created.", dir);
-            }*/
+            }
 
             //Step 1. Initialization
             //Step 1.1 Compute euclidean distances between weight vectors and find T
@@ -250,7 +250,7 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
 
                         parents[0] = population.Get(ACOrSelection(n, type));
                         parents[1] = population.Get(n);
-                        //parents = population.Get(p[0]);
+                        //parents[0] = population.Get(p[0]);
 
                         // Apply ACOR crossover 
                         child = (Solution)crossover.Execute(parents);
@@ -258,8 +258,8 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
                         // Apply ACOR crossover 
                         child = (Solution)crossover.Execute(parents);
 
-                        // Apply mutation
-                        // mutation.Execute(child);
+                        // // Apply mutation
+                        mutation.Execute(child);
 
                         // Evaluation
                         Problem.Evaluate(child);
@@ -338,10 +338,10 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
                     }
                 }
 
-                /*string filevar = dir + "/VAR" + iteration;
+                /**/string filevar = dir + "/VAR" + iteration;
                 string filefun = dir + "/FUN" + iteration;
                 population.PrintVariablesToFile(filevar);
-                population.PrintObjectivesToFile(filefun);*/
+                population.PrintObjectivesToFile(filefun);
 
                 iteration++;
 
