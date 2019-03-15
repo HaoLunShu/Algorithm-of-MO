@@ -21,12 +21,12 @@ namespace JMetalCSharp.Core
 			set;
 		}
 
-		#region Constructors
+        #region Constructors
 
-		/// <summary>
-		/// Creates an unbounded solution set.
-		/// </summary>
-		public SolutionSet()
+        /// <summary>
+        /// Creates an unbounded solution set.
+        /// </summary>
+        public SolutionSet()
 		{
 			SolutionsList = new List<Solution>();
 			Capacity = 0;
@@ -40,7 +40,7 @@ namespace JMetalCSharp.Core
 		{
 			SolutionsList = new List<Solution>();
 			Capacity = maximumSize;
-		}
+        }
 
 		#endregion
 

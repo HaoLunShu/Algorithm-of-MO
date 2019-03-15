@@ -2,6 +2,7 @@
 using JMetalCSharp.Utils;
 using JMetalCSharp.Utils.Comparators;
 using System;
+using System.IO;
 
 namespace JMetalCSharp.Metaheuristics.NSGAII
 {
@@ -87,12 +88,24 @@ namespace JMetalCSharp.Metaheuristics.NSGAII
 				population.Add(newSolution);
 			}
 
+            /*
+            string dir = "Result/MOEAD_ACOR/ZDT4_Real/Record/NSGAII_SBX_nr16";
+            if (Directory.Exists(dir))
+            {
+                Console.WriteLine("The directory {0} already exists.", dir);
+            }
+            else
+            {
+                Directory.CreateDirectory(dir);
+                Console.WriteLine("The directory {0} was created.", dir);
+            }*/
+
 			// Generations 
 			while (iteration < iterationsNumber)
 			{
 
-				// Create the offSpring solutionSet      
-				offspringPopulation = new SolutionSet(populationSize);
+                // Create the offSpring solutionSet      
+                offspringPopulation = new SolutionSet(populationSize);
 				Solution[] parents = new Solution[2];
 				for (int i = 0; i < (populationSize / 2); i++)
 				{
@@ -114,8 +127,8 @@ namespace JMetalCSharp.Metaheuristics.NSGAII
 					}
 				}
 
-				// Create the solutionSet union of solutionSet and offSpring
-				union = ((SolutionSet)population).Union(offspringPopulation);
+                // Create the solutionSet union of solutionSet and offSpring
+                union = ((SolutionSet)population).Union(offspringPopulation);
 
 				// Ranking the union
 				Ranking ranking = new Ranking(union);
@@ -160,7 +173,13 @@ namespace JMetalCSharp.Metaheuristics.NSGAII
 					}
 
 					remain = 0;
-				}
+                }
+
+                /*
+                string filevar = dir + "/VAR" + iteration;
+                string filefun = dir + "/FUN" + iteration;
+                population.PrintVariablesToFile(filevar);
+                population.PrintObjectivesToFile(filefun);*/
 
                 iteration++;
 

@@ -125,6 +125,7 @@
     <Compile Include="Operators\LocalSearch\MutationLocalSearch.cs" />
     <Compile Include="Operators\Mutation\BoxMuller.cs" />
     <Compile Include="Operators\Mutation\BitFlipMutation.cs" />
+    <Compile Include="Operators\Mutation\DynamicPolynomialMutation.cs" />
     <Compile Include="Operators\Mutation\Mutation.cs" />
     <Compile Include="Operators\Mutation\MutationFactory.cs" />
     <Compile Include="Operators\Mutation\NonUniformMutation.cs" />

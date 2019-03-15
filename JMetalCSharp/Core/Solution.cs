@@ -15,12 +15,18 @@ namespace JMetalCSharp.Core
 		{
 			get;
 			private set;
-		}
+        }
 
-		/// <summary>
-		/// Stores the type of the encoding.variable
-		/// </summary>
-		public SolutionType Type { get; set; }
+        public int NumberofReplace
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Stores the type of the encoding.variable
+        /// </summary>
+        public SolutionType Type { get; set; }
 
 		/// <summary>
 		/// Stores the decision variables of the solution
@@ -170,6 +176,8 @@ namespace JMetalCSharp.Core
 
 			this.Variable = Type.CreateVariables();
             this.stdDev = new double[Variable.Length];
+
+            this.NumberofReplace = 0;
 		}
 
 		public Solution(Problem problem, Variable[] variables)
@@ -186,6 +194,8 @@ namespace JMetalCSharp.Core
 
 			this.Variable = variables;
             this.stdDev = new double[variables.Length];
+
+            this.NumberofReplace = 0;
         }
 
 		public Solution(Solution solution)
@@ -212,6 +222,7 @@ namespace JMetalCSharp.Core
 			this.Rank = solution.Rank;
 			this.Location = solution.Location;
             this.stdDev = new double[this.Variable.Length];
+            this.NumberofReplace = 0;
 
             for (int j = 0; j < this.Variable.Length; j++)
             {

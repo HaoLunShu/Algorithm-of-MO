@@ -134,7 +134,7 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
             pro_T = GerPro(t);
             pro_A = GerPro(populationSize);
 
-            /**/string dir = "Result/MOEAD_ACOR/ZDT4_Real/Record/Replace/3nd_nr15_zeta0.9";
+            /*string dir = "Result/MOEAD_ACOR/ZDT4_Real/Record/Replace/3nd_Dynamic_nr15";
             if (Directory.Exists(dir))
             {
                 Console.WriteLine("The directory {0} already exists.", dir);
@@ -143,7 +143,7 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
             {
                 Directory.CreateDirectory(dir);
                 Console.WriteLine("The directory {0} was created.", dir);
-            }
+            }*/
 
             //Step 1. Initialization
             //Step 1.1 Compute euclidean distances between weight vectors and find T
@@ -217,6 +217,7 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
                 else if (crossover.ToString() == "JMetalCSharp.Operators.Crossover.ACOR")
                 {
                     Solution[] parents = new Solution[2];
+                    int t = 0;
 
                     for (int i = 0; i < populationSize; i++)
                     {
@@ -232,12 +233,12 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
                         if (rnd < delta) // if (rnd < realb)    
                         {
                             type = 1;   // minmum
-                            //parents = population.Get(ACOrSelection2(n, type, pro_T));
+                            //parents[0] = population.Get(ACOrSelection2(n, type, pro_T));
                         }
                         else
                         {
                             type = 2;   // whole neighborhood probability
-                            //parents = population.Get(ACOrSelection2(n, type, pro_A));
+                            //parents[0] = population.Get(ACOrSelection2(n, type, pro_A));
                         }
                         GetStdDev(neighborhood);
                         //GetStdDev1(neighborhood, type);
@@ -272,7 +273,9 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
                         UpdateReference(child);
 
                         // STEP 2.5. Update of solutions
-                        UpdateProblem(child, n, 1);
+                        t = UpdateProblemWithReplace(child, n, 1);
+
+                        child.NumberofReplace = t;
                     }
                 }
                 else
@@ -338,10 +341,10 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
                     }
                 }
 
-                /**/string filevar = dir + "/VAR" + iteration;
+                /*string filevar = dir + "/VAR" + iteration;
                 string filefun = dir + "/FUN" + iteration;
                 population.PrintVariablesToFile(filevar);
-                population.PrintObjectivesToFile(filefun);
+                population.PrintObjectivesToFile(filefun);*/
 
                 iteration++;
 
@@ -840,7 +843,62 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
 			}
 		}
 
-		private double FitnessFunction(Solution individual, double[] lambda)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="indiv">child solution</param>
+        /// <param name="id">the id of current subproblem</param>
+        /// <param name="type">update solutions in - neighborhood (1) or whole population (otherwise)</param>
+        private int UpdateProblemWithReplace(Solution indiv, int id, int type)
+        {
+            int size;
+            int time;
+
+            time = 0;
+
+            if (type == 1)
+            {
+                size = neighborhood[id].Length;
+            }
+            else
+            {
+                size = population.Size();
+            }
+            int[] perm = new int[size];
+
+            Utils.RandomPermutation(perm, size);
+
+            for (int i = 0; i < size; i++)
+            {
+                int k;
+                if (type == 1)
+                {
+                    k = neighborhood[id][perm[i]];
+                }
+                else
+                {
+                    k = perm[i];      // calculate the values of objective function regarding the current subproblem
+                }
+                double f1, f2;
+
+                f1 = FitnessFunction(population.Get(k), lambda[k]);
+                f2 = FitnessFunction(indiv, lambda[k]);
+
+                if (f2 < f1)
+                {
+                    population.Replace(k, new Solution(indiv));
+                    time++;
+                }
+                // the maximal number of solutions updated is not allowed to exceed 'limit'
+                if (time >= nr)
+                {
+                    break;
+                }
+            }
+            return time;
+        }
+
+        private double FitnessFunction(Solution individual, double[] lambda)
 		{
 			double fitness;
 			fitness = 0.0;

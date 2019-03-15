@@ -23,7 +23,11 @@ namespace JMetalCSharp.Operators.Mutation
 				return new PolynomialBitFlipMutation(parameters);
 			else if (name.Equals("UniformMutation", StringComparison.InvariantCultureIgnoreCase))
 				return new UniformMutation(parameters);
-			else
+            else if (name.Equals("DynamicPolynomialMutation", StringComparison.InvariantCultureIgnoreCase))
+                return new DynamicPolynomialMutation(parameters);
+            else if (name.Equals("BoxMuller", StringComparison.InvariantCultureIgnoreCase))
+                return new BoxMuller(parameters);
+            else
 			{
 				Logger.Log.Error("Exception in " + typeof(MutationFactory).FullName + ".GetMutationOperator()");
 				Console.WriteLine("Exception in " + typeof(MutationFactory).FullName + ".GetMutationOperator()");

@@ -330,6 +330,14 @@ namespace Algorithm_of_MO
                     mutation = MutationFactory.GetMutationOperator("PolynomialMutation", parameters);
                     File.AppendAllLines(filepath, line6);
                     break;
+                case "DynamicPolynomialMutation":
+                    parameters = new Dictionary<string, object>();
+                    parameters.Add("probability", 1.0 / problem.NumberOfVariables);
+                    parameters.Add("distributionIndex", double.Parse(diom));
+                    parameters.Add("nr", int.Parse(nr));
+                    mutation = MutationFactory.GetMutationOperator("DynamicPolynomialMutation", parameters);
+                    File.AppendAllLines(filepath, line6);
+                    break;
                 case "BoxMuller":
                     parameters.Add("zeta", double.Parse(zeta));
                     parameters.Add("probability", 1.0 / problem.NumberOfVariables);
