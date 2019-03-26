@@ -134,7 +134,7 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
             pro_T = GerPro(t);
             pro_A = GerPro(populationSize);
 
-            /*string dir = "Result/MOEAD_ACOR/ZDT4_Real/Record/Replace/3nd_Dynamic_nr15";
+            /*string dir = "Result/MOEAD_ACOR/ZDT4_Real/Record/Replace/3nd_Dynamic2_nr16";
             if (Directory.Exists(dir))
             {
                 Console.WriteLine("The directory {0} already exists.", dir);
@@ -256,8 +256,7 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
                         // Apply ACOR crossover 
                         child = (Solution)crossover.Execute(parents);
 
-                        // Apply ACOR crossover 
-                        child = (Solution)crossover.Execute(parents);
+                        child.NumberofReplace = t;
 
                         // // Apply mutation
                         mutation.Execute(child);
@@ -274,8 +273,6 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
 
                         // STEP 2.5. Update of solutions
                         t = UpdateProblemWithReplace(child, n, 1);
-
-                        child.NumberofReplace = t;
                     }
                 }
                 else

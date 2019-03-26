@@ -33,6 +33,8 @@ namespace JMetalCSharp.Operators.Crossover
                 return new BLXAlphaCrossover(parameters);
             else if (name.Equals("ACOR", StringComparison.InvariantCultureIgnoreCase))
                 return new ACOR(parameters);
+            else if (name.Equals("null", StringComparison.InvariantCultureIgnoreCase))
+                return null;
             else
             {
                 Logger.Log.Error("Exception in CrossoverFactory.GetCrossoverOperator(): 'Operator " + name + "' not found");

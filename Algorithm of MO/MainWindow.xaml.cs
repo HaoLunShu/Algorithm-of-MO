@@ -51,321 +51,19 @@ namespace Algorithm_of_MO
             Operator mutation = null; // Mutation operator
             Operator selection= null; // Selection operator
 
-            Dictionary<string, object> parameters; // Operator parameters
-
             QualityIndicator indicators; // Object to get quality indicators
 
-            string text;
-            string pb = "";
-            string st = "";
-            string nov = "";
-            string noo = "";
-            string al = "";
-            string ps = "";
-            string itn = "";
-            string dad = "";
-            string t = "";
-            string delta = "";
-            string nr = "";
-            string co = "";
-            string poc = "";
-            string dioc = "";
-            string cr = "";
-            string f = "";
-            string k = "";
-            string zeta = "";
-            //string dev = "";
-            string q = "";
-            string mu = "";
-            //string pom = "";
-            string diom = "";
-            string s = "";
-            string qi = "";
-            string rt = "";
-            System.IO.StreamReader sr = new System.IO.StreamReader(@"Data\Parameters\setting.txt");
-            while ((text = sr.ReadLine()) != null)
-            {
-                string[] words = text.Split(' ');
-                if (true == setting.ContainsKey(words[0]))
-                    setting[words[0]] = words[1];
-                else
-                    setting.Add(words[0], words[1]);
-            }
-            sr.Close();
-
-            if (true == setting.ContainsKey("problem"))
-                pb = setting["problem"];
-            if (true == setting.ContainsKey("solutionType"))
-                st = setting["solutionType"];
-            if (true == setting.ContainsKey("numberOfVariables"))
-                nov = setting["numberOfVariables"];
-            if (true == setting.ContainsKey("numberOfObjectives"))
-                noo = setting["numberOfObjectives"];
-            if (true == setting.ContainsKey("algorithm"))
-                al = setting["algorithm"];
-            if (true == setting.ContainsKey("populationSize"))
-                ps = setting["populationSize"];
-            if (true == setting.ContainsKey("iterationsNumber"))
-                itn = setting["iterationsNumber"];
-            if (true == setting.ContainsKey("dataDirectory"))
-                dad = setting["dataDirectory"];
-            if (true == setting.ContainsKey("T"))
-                t = setting["T"];
-            if (true == setting.ContainsKey("delta"))
-                delta = setting["delta"];
-            if (true == setting.ContainsKey("nr"))
-                nr = setting["nr"];
-            if (true == setting.ContainsKey("Crossover"))
-                co = setting["Crossover"];
-            if (true == setting.ContainsKey("probabilityOfCrossover"))
-                poc = setting["probabilityOfCrossover"];
-            if (true == setting.ContainsKey("distributionIndexOfCrossover"))
-                dioc = setting["distributionIndexOfCrossover"];
-            if (true == setting.ContainsKey("CR"))
-                cr = setting["CR"];
-            if (true == setting.ContainsKey("F"))
-                f = setting["F"];
-            if (true == setting.ContainsKey("K"))
-                k = setting["K"];
-            if (true == setting.ContainsKey("zeta"))
-                zeta = setting["zeta"];
-            //if (true == setting.ContainsKey("DEVariant"))
-            //dev = setting["DEVariant"];
-            if (true == setting.ContainsKey("q"))
-                q = setting["q"];
-            if (true == setting.ContainsKey("Mutation"))
-                mu = setting["Mutation"];
-            else mu = null;
-            //if (true == setting.ContainsKey("probabilityOfMutation"))
-                //pom = setting["probabilityOfMutation"];
-            if (true == setting.ContainsKey("distributionIndexOfMutation"))
-                diom = setting["distributionIndexOfMutation"];
-            if (true == setting.ContainsKey("Selection"))
-                s = setting["Selection"];
-            else s = null;
-            if (true == setting.ContainsKey("QualityIndicator"))
-                qi = setting["QualityIndicator"];
-            if (true == setting.ContainsKey("repeatTimes"))
-                rt = setting["repeatTimes"];
-            switch (pb)
-            {
-                case "ZDT1":
-                    problem = new ZDT1(st, int.Parse(nov));
-                    break;
-                case "ZDT2":
-                    problem = new ZDT2(st, int.Parse(nov));
-                    break;
-                case "ZDT3":
-                    problem = new ZDT3(st, int.Parse(nov));
-                    break;
-                case "ZDT4":
-                    problem = new ZDT4(st, int.Parse(nov));
-                    break;
-                case "ZDT5":
-                    problem = new ZDT5(st, int.Parse(nov));
-                    break;
-                case "ZDT6":
-                    problem = new ZDT6(st, int.Parse(nov));
-                    break;
-                case "DTLZ1":
-                    problem = new DTLZ1(st, int.Parse(nov), int.Parse(noo));
-                    break;
-                case "DTLZ2":
-                    problem = new DTLZ2(st, int.Parse(nov), int.Parse(noo));
-                    break;
-                case "DTLZ3":
-                    problem = new DTLZ3(st, int.Parse(nov), int.Parse(noo));
-                    break;
-                case "DTLZ4":
-                    problem = new DTLZ4(st, int.Parse(nov), int.Parse(noo));
-                    break;
-                case "DTLZ5":
-                    problem = new DTLZ5(st, int.Parse(nov), int.Parse(noo));
-                    break;
-                case "DTLZ6":
-                    problem = new DTLZ6(st, int.Parse(nov), int.Parse(noo));
-                    break;
-                case "DTLZ7":
-                    problem = new DTLZ7(st, int.Parse(nov), int.Parse(noo));
-                    break;
-                case "Fonseca":
-                    problem = new Fonseca(st);
-                    break;
-                case "Kursawe":
-                    problem = new Kursawe(st, int.Parse(nov));
-                    break;
-                case "LZ09_F1":
-                    problem = new LZ09_F1(st);
-                    break;
-                case "LZ09_F2":
-                    problem = new LZ09_F2(st);
-                    break;
-                case "LZ09_F3":
-                    problem = new LZ09_F3(st);
-                    break;
-                case "LZ09_F4":
-                    problem = new LZ09_F4(st);
-                    break;
-                case "LZ09_F5":
-                    problem = new LZ09_F5(st);
-                    break;
-                case "LZ09_F6":
-                    problem = new LZ09_F6(st);
-                    break;
-                case "LZ09_F7":
-                    problem = new LZ09_F7(st);
-                    break;
-                case "LZ09_F8":
-                    problem = new LZ09_F8(st);
-                    break;
-                case "LZ09_F9":
-                    problem = new LZ09_F9(st);
-                    break;
-                case "Schaffer":
-                    problem = new Schaffer(st);
-                    break;
-                default:
-                    break;
-            }
-
-            string dirPath = "Result/" + al + "_" + co + "/" + pb + "_" + st;
-            if (Directory.Exists(dirPath))
-            {
-                Console.WriteLine("The directory {0} already exists.", dirPath);
-            }
-            else
-            {
-                Directory.CreateDirectory(dirPath);
-                Console.WriteLine("The directory {0} was created.", dirPath);
-            }
-
-            string filepath = dirPath + "/Parameter.txt";
-            string[] line1 = { "numberOfVariables " + nov, "numberOfObjectives " + noo, "populationSize " + ps, "iterationsNumber " + itn };
-            string[] line2 = { "T " + t, "delta " + delta, "nr " + nr };
-            string[] line3 = { "probabilityOfCrossover " + poc, "distributionIndexOfCrossover " + dioc };
-            string[] line4 = { "CR " + cr, "F " + f, "K " + k };
-            //string[] line5 = { "zeta " + zeta, "q " + q, "" };
-            string[] line6 = { "probabilityOfMutation " + 1.0 / problem.NumberOfVariables, "distributionIndexOfMutation " + diom, "" };
-            string[] line5 = { "zeta " + zeta, "q " + q };
-            //string[] line6 = { "probabilityOfMutation " + 0.2, "distributionIndexOfMutation " + diom, "" };
-            File.AppendAllLines(filepath, line1);
-
-            switch (al)
-            {
-                case "NSGAII":
-                    algorithm = new JMetalCSharp.Metaheuristics.NSGAII.NSGAII(problem);
-                    break;
-                case "MOEAD":
-                    algorithm = new JMetalCSharp.Metaheuristics.MOEAD.MOEAD(problem);
-                    algorithm.SetInputParameter("T", int.Parse(t));
-                    algorithm.SetInputParameter("delta", double.Parse(delta));
-                    algorithm.SetInputParameter("nr", int.Parse(nr));
-                    File.AppendAllLines(filepath, line2);
-                    break;
-                default:
-                    break;
-            }
-
-            indicators = null;
-            // Default problem
-            //problem = new Kursawe("Real", 3);
-            //problem = new Kursawe("BinaryReal", 3);
-            //problem = new Water("Real");
-            //problem = new ZDT3("ArrayReal", 30);
-            //problem = new LZ09_F1("Real");
-            //problem = new ConstrEx("Real");
-            //problem = new DTLZ1("Real", 10, 3);
-            //problem = new OKA2("Real") ;
-
-            //algorithm = new JMetalCSharp.Metaheuristics.NSGAII.NSGAII(problem);
-            //algorithm = new ssNSGAII(problem);
-            //algorithm = new JMetalCSharp.Metaheuristics.MOEAD.MOEAD(problem);
-
-            // Algorithm parameters
-            algorithm.SetInputParameter("populationSize", int.Parse(ps));
-            algorithm.SetInputParameter("q", double.Parse(q));
-            algorithm.SetInputParameter("iterationsNumber", int.Parse(itn));
-
-            algorithm.SetInputParameter("dataDirectory", "Data/Parameters/Weight");
-
-            //algorithm.SetInputParameter("finalSize", 300); // used by MOEAD_DRA
-
-
-
-            // Mutation and Crossover for Real codification 
-            parameters = new Dictionary<string, object>();
-            switch(co)
-            {
-                case "SBXCrossover":
-                    parameters.Add("probability", double.Parse(poc));
-                    parameters.Add("distributionIndex", double.Parse(dioc));
-                    crossover = CrossoverFactory.GetCrossoverOperator("SBXCrossover", parameters);
-                    File.AppendAllLines(filepath, line3);
-                    break;
-                case "DifferentialEvolutionCrossover":
-                    parameters.Add("CR", double.Parse(cr));
-                    parameters.Add("F", double.Parse(f));
-                    parameters.Add("K", double.Parse(k));
-                    crossover = CrossoverFactory.GetCrossoverOperator("DifferentialEvolutionCrossover", parameters);
-                    File.AppendAllLines(filepath, line4);
-                    break;
-                case "ACOR":
-                    parameters.Add("zeta", double.Parse(zeta));
-                    crossover = CrossoverFactory.GetCrossoverOperator("ACOR", parameters);
-                    File.AppendAllLines(filepath, line5);
-                    break;
-                case null:
-                    break;
-                default:
-                    break;
-            }
-
-            switch(mu)
-            {
-                case "PolynomialMutation":
-                    parameters = new Dictionary<string, object>();
-                    parameters.Add("probability", 1.0 / problem.NumberOfVariables);
-                    //parameters.Add("probability", 0.2);
-                    parameters.Add("distributionIndex", double.Parse(diom));
-                    mutation = MutationFactory.GetMutationOperator("PolynomialMutation", parameters);
-                    File.AppendAllLines(filepath, line6);
-                    break;
-                case "DynamicPolynomialMutation":
-                    parameters = new Dictionary<string, object>();
-                    parameters.Add("probability", 1.0 / problem.NumberOfVariables);
-                    parameters.Add("distributionIndex", double.Parse(diom));
-                    parameters.Add("nr", int.Parse(nr));
-                    mutation = MutationFactory.GetMutationOperator("DynamicPolynomialMutation", parameters);
-                    File.AppendAllLines(filepath, line6);
-                    break;
-                case "BoxMuller":
-                    parameters.Add("zeta", double.Parse(zeta));
-                    parameters.Add("probability", 1.0 / problem.NumberOfVariables);
-                    crossover = MutationFactory.GetMutationOperator("BoxMuller", parameters);
-                    File.AppendAllLines(filepath, line6);
-                    break;
-                case null:
-                    break;
-                default:
-                    break;
-            }
-
-            // Selection Operator 
-            switch(s)
-            {
-                case "BinaryTournament2":
-                    parameters = null;
-                    selection = SelectionFactory.GetSelectionOperator("BinaryTournament2", parameters);
-                    break;
-                case null:
-                    break;
-                default:
-                    break;
-            }
+            FileRead fileRead = new FileRead();
+            fileRead.fileread();
+            problem = fileRead.GetProblem();
+            algorithm = fileRead.GetAlgorithm();
+            crossover = fileRead.GetCrossover();
+            mutation = fileRead.GetMutation();
+            selection = fileRead.GetSelection();
 
             // Quality Indicators Operator
             //indicators = new QualityIndicator(problem, "DTLZ1.3D.pf");
-            indicators = new QualityIndicator(problem, qi);
+            indicators = new QualityIndicator(problem, fileRead.Qi);
             //indicators = new QualityIndicator(problem, "LZ09_F1.pf");
 
             // Add the operators to the algorithm
@@ -376,7 +74,7 @@ namespace Algorithm_of_MO
             // Add the indicator object to the algorithm
             algorithm.SetInputParameter("indicators", indicators);
 
-            for (int i = 1; i <= int.Parse(rt); i++)
+            for (int i = 1; i <= int.Parse(fileRead.Rt); i++)
             {
 
                 // Logger object and file to store log messages
@@ -384,13 +82,13 @@ namespace Algorithm_of_MO
 
                 var appenders = logger.Logger.Repository.GetAppenders();
                 var fileAppender = appenders[0] as log4net.Appender.FileAppender;
-                fileAppender.File = dirPath + "/" + al + i +".log";
+                fileAppender.File = fileRead.DirPath + "/" + fileRead.Al + i +".log";
                 fileAppender.ActivateOptions();
 
-                string filevar = dirPath + "/VAR" + i;
-                string filefun = dirPath + "/FUN" + i;
+                string filevar = fileRead.DirPath + "/VAR" + i;
+                string filefun = fileRead.DirPath + "/FUN" + i;
 
-                FileStream file = new FileStream(dirPath + "/" + al + "new" + i + ".txt", FileMode.OpenOrCreate, FileAccess.ReadWrite);
+                FileStream file = new FileStream(fileRead.DirPath + "/" + fileRead.Al + "new" + i + ".txt", FileMode.OpenOrCreate, FileAccess.ReadWrite);
                 StreamWriter newlogger = new StreamWriter(file);
 
                 // Execute the Algorithm
@@ -431,8 +129,11 @@ namespace Algorithm_of_MO
                 }
                 newlogger.Close();
                 file.Close();
+                algorithm.AddOperator("mutation", mutation);
             }
         }
+
+        #region Methods
 
         public void calculateStatistics(string filepath, string algorithm, int numbers)
         {
@@ -706,6 +407,10 @@ namespace Algorithm_of_MO
 
         }
 
+        #endregion
+
+        #region Windows function
+
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             MyAlgorithm();
@@ -713,22 +418,82 @@ namespace Algorithm_of_MO
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            string pb = "";
-            string st = "";
-            string co = "";
-            string al = "";
-            string rt = "";
-            if (true == setting.ContainsKey("problem"))
-                pb = setting["problem"];
-            if (true == setting.ContainsKey("solutionType"))
-                st = setting["solutionType"];
-            if (true == setting.ContainsKey("algorithm"))
-                al = setting["algorithm"];
-            if (true == setting.ContainsKey("Crossover"))
-                co = setting["Crossover"];
-            if (true == setting.ContainsKey("repeatTimes"))
-                rt = setting["repeatTimes"];
-            calculateStatistics("Result/" + al + "_" + co + "/" + pb + "_" + st, al, int.Parse(rt));
+            FileRead file = new FileRead();
+            file.fileread();
+            if (file.Co2 != "")
+                calculateStatistics("Result/" + file.Al + "_" + file.Co + "_" + file.Co2 + "/" + file.Pb + "_" + file.St, file.Al, int.Parse(file.Rt));
+            else
+                calculateStatistics("Result/" + file.Al + "_" + file.Co + "/" + file.Pb + "_" + file.St, file.Al, int.Parse(file.Rt));
         }
+
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            FileRead read = new FileRead();
+            read.fileread();
+            Problem problem = read.GetProblem();
+            Algorithm algorithm = read.GetAlgorithm();
+            QualityIndicator indicators = new QualityIndicator(problem, read.Qi);
+
+            NewAlgorithmTest test = new NewAlgorithmTest();
+
+            for (int i = 1; i <= int.Parse(read.Rt); i++)
+            {
+
+                // Logger object and file to store log messages
+                var logger = Logger.Log;
+
+                var appenders = logger.Logger.Repository.GetAppenders();
+                var fileAppender = appenders[0] as log4net.Appender.FileAppender;
+                fileAppender.File = read.DirPath + "/" + read.Al + i + ".log";
+                fileAppender.ActivateOptions();
+
+                string filevar = read.DirPath + "/VAR" + i;
+                string filefun = read.DirPath + "/FUN" + i;
+
+                FileStream file = new FileStream(read.DirPath + "/MOEADnew" + i + ".txt", FileMode.OpenOrCreate, FileAccess.ReadWrite);
+                StreamWriter newlogger = new StreamWriter(file);
+
+                // Execute the Algorithm
+                long initTime = Environment.TickCount;
+                SolutionSet population = test.Mix();
+                long estimatedTime = Environment.TickCount - initTime;
+
+                // Result messages 
+                logger.Info("Total execution time: " + estimatedTime + "ms");
+                logger.Info("Variables values have been writen to file " + filevar);
+                newlogger.WriteLine("Total execution time: " + estimatedTime + "ms" + "\n");
+                newlogger.WriteLine("Variables values have been writen to file " + filevar + "\n");
+                population.PrintVariablesToFile(filevar);
+                logger.Info("Objectives values have been writen to file " + filefun);
+                population.PrintObjectivesToFile(filefun);
+                Console.WriteLine("Time: " + estimatedTime);
+                newlogger.WriteLine("Time: " + estimatedTime + "\n");
+                Console.ReadLine();
+                if (indicators != null)
+                {
+                    logger.Info("Quality indicators");
+                    logger.Info("Hypervolume: " + indicators.GetHypervolume(population));
+                    logger.Info("GD         : " + indicators.GetGD(population));
+                    logger.Info("IGD        : " + indicators.GetIGD(population));
+                    logger.Info("Spread     : " + indicators.GetSpread(population));
+                    logger.Info("Epsilon    : " + indicators.GetEpsilon(population));
+
+                    newlogger.WriteLine("Quality indicators");
+                    newlogger.WriteLine("Hypervolume: " + indicators.GetHypervolume(population).ToString("F18") + "\n");
+                    newlogger.WriteLine("GD         : " + indicators.GetGD(population).ToString("F18") + "\n");
+                    newlogger.WriteLine("IGD        : " + indicators.GetIGD(population).ToString("F18") + "\n");
+                    newlogger.WriteLine("Spread     : " + indicators.GetSpread(population).ToString("F18") + "\n");
+                    newlogger.WriteLine("Epsilon    : " + indicators.GetEpsilon(population).ToString("F18") + "\n");
+
+                    int evaluations = test.GetEvaluations();
+                    logger.Info("Speed      : " + evaluations + "     evaluations");
+                    newlogger.WriteLine("Speed      : " + evaluations + "     evaluations" + "\n");
+                }
+                newlogger.Close();
+                file.Close();
+            }
+        }
+
+        #endregion
     }
 }

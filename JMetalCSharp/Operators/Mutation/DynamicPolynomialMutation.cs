@@ -20,8 +20,6 @@ namespace JMetalCSharp.Operators.Mutation
         private double? mutationProbability = null;
         private double distributionIndex = eta_m;
 
-        private int nr = 0;
-
         /// <summary>
         /// Valid solution types to apply this operator
         /// </summary>
@@ -40,7 +38,6 @@ namespace JMetalCSharp.Operators.Mutation
         {
             Utils.Utils.GetDoubleValueFromParameter(parameters, "probability", ref mutationProbability);
             Utils.Utils.GetDoubleValueFromParameter(parameters, "distributionIndex", ref distributionIndex);
-            Utils.Utils.GetIntValueFromParameter(parameters, "nr", ref nr);
         }
 
         #endregion
@@ -52,19 +49,19 @@ namespace JMetalCSharp.Operators.Mutation
         /// </summary>
         /// <param name="probability">Mutation probability</param>
         /// <param name="solution">The solution to mutate</param>
-        private void DoMutation(double probability, Solution solution)
+        private void DoMutation(Solution solution)
         {
             double rnd, delta1, delta2, mut_pow, deltaq;
             double y, yl, yu, val, xy;
 
-            probability = probability + (nr - solution.NumberofReplace) * 0.05;
-            if (probability <= 0.1)
-                probability = 0.1;
+            mutationProbability = mutationProbability - solution.NumberofReplace * 0.001;
+            if (mutationProbability <= 0.1)
+                mutationProbability = 0.1;
 
             XReal x = new XReal(solution);
             for (int var = 0; var < solution.NumberOfVariables(); var++)
             {
-                if (JMetalRandom.NextDouble() <= probability)
+                if (JMetalRandom.NextDouble() <= mutationProbability)
                 {
                     y = x.GetValue(var);
                     yl = x.GetLowerBound(var);
@@ -97,7 +94,6 @@ namespace JMetalCSharp.Operators.Mutation
                     x.SetValue(var, y);
                 }
             }
-            nr = nr + 1;
         }
 
         #endregion
@@ -120,7 +116,7 @@ namespace JMetalCSharp.Operators.Mutation
                 throw new Exception("Exception in " + this.GetType().FullName + ".execute()");
             }
 
-            DoMutation(mutationProbability.Value, solution);
+            DoMutation(solution);
 
             return solution;
         }
