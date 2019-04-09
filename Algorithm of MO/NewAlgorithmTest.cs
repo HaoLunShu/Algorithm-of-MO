@@ -67,6 +67,11 @@ namespace Algorithm_of_MO
         private double delta;
 
         /// <summary>
+        /// probability that parent solutions are selected from neighbourhood
+        /// </summary>
+        private double gamma;
+
+        /// <summary>
         /// maximal number of solutions replaced by each child solution
         /// </summary>
         private int nr;
@@ -122,6 +127,7 @@ namespace Algorithm_of_MO
             t = int.Parse(fileRead.T);
             nr = int.Parse(fileRead.Nr);
             delta = double.Parse(fileRead.Delta);
+            gamma = double.Parse(fileRead.Gamma);
 
             neighborhood = new int[populationSize][];
             for (int i = 0; i < populationSize; i++)
@@ -183,7 +189,7 @@ namespace Algorithm_of_MO
                         double rnd = JMetalRandom.NextDouble();
 
                         // STEP 2.1. ACOR selection based on probability
-                        if (rnd < delta) // if (rnd < realb)    
+                        if (rnd < gamma) // if (rnd < realb)    
                         {
                             type = 1;   // minmum
                             //parents[0] = population.Get(ACOrSelection2(n, type, pro_T));
@@ -285,6 +291,54 @@ namespace Algorithm_of_MO
                         UpdateProblem(offSpring[0], n, type);
                         UpdateProblem(offSpring[1], n, type);
                     }
+
+                    //for (int i = 0; i < populationSize; i++)
+                    //{
+                    //    int n = permutation[i]; // or int n = i;
+
+                    //    int type;
+                    //    double rnd = JMetalRandom.NextDouble();
+
+                    //    // STEP 2.1. Mating selection based on probability
+                    //    if (rnd < delta) // if (rnd < realb)    
+                    //    {
+                    //        type = 1;   // neighborhood
+                    //    }
+                    //    else
+                    //    {
+                    //        type = 2;   // whole population
+                    //    }
+                    //    List<int> p = new List<int>();
+                    //    MatingSelection(p, n, 2, type);
+
+                    //    // STEP 2.2. Reproduction
+                    //    Solution child;
+                    //    Solution[] parent = new Solution[3];
+
+                    //    parent[0] = population.Get(p[0]);
+                    //    parent[1] = population.Get(p[1]);
+
+                    //    parent[2] = population.Get(n);
+
+                    //    // Apply DE crossover 
+                    //    child = (Solution)crossover1.Execute(new object[] { population.Get(n), parent });
+
+                    //    // Apply mutation
+                    //    mutation.Execute(child);
+
+                    //    // Evaluation
+                    //    problem.Evaluate(child);
+
+                    //    evaluations++;
+
+                    //    // STEP 2.3. Repair. Not necessary
+
+                    //    // STEP 2.4. Update z_
+                    //    UpdateReference(child);
+
+                    //    // STEP 2.5. Update of solutions
+                    //    UpdateProblem(child, n, type);
+                    //}
                 }
 
                 /*string filevar = dir + "/VAR" + iteration;

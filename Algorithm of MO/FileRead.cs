@@ -46,6 +46,7 @@ namespace Algorithm_of_MO
         string cr = "";
         string f = "";
         string k = "";
+        public string Gamma { get; private set; } = "";
         string zeta = "";
         string q = "";
         string mu = "";
@@ -107,6 +108,8 @@ namespace Algorithm_of_MO
                 f = setting["F"];
             if (true == setting.ContainsKey("K"))
                 k = setting["K"];
+            if (true == setting.ContainsKey("gamma"))
+                Gamma = setting["gamma"];
             if (true == setting.ContainsKey("zeta"))
                 zeta = setting["zeta"];
             if (true == setting.ContainsKey("q"))
@@ -275,7 +278,6 @@ namespace Algorithm_of_MO
             string filepath = DirPath + "/Parameter.txt";
             string[] line3 = { "probabilityOfCrossover " + poc, "distributionIndexOfCrossover " + dioc };
             string[] line4 = { "CR " + cr, "F " + f, "K " + k };
-            string[] line6 = { "probabilityOfMutation " + 1.0 / problem.NumberOfVariables, "distributionIndexOfMutation " + diom, "" };
             string[] line5 = { "zeta " + zeta, "q " + q };
 
             Dictionary<string, object>  parameters = new Dictionary<string, object>();
@@ -317,7 +319,14 @@ namespace Algorithm_of_MO
 
         public Operator GetCrossover2()
         {
+            string filepath = DirPath + "/Parameter.txt";
+
             Dictionary<string, object> parameters = new Dictionary<string, object>();
+
+            string[] line7 = { Co + " " + Ra, Co2 + " " + (1 - double.Parse(Ra)) };
+            string[] line8 = { "gamma " + Gamma };
+            File.AppendAllLines(filepath, line7);
+            File.AppendAllLines(filepath, line8);
 
             switch (Co2)
             {
