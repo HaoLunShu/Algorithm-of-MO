@@ -362,14 +362,14 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
             // Return as output parameter the required evaluations
             SetOutputParameter("evaluations", requiredEvaluations);
 
-            //Result = population;
+            Result = population;
 
             //return population;
 
             // Return the first non-dominated front
             Ranking rank = new Ranking(population);
 
-            Result = rank.GetSubfront(0);
+            //Result = rank.GetSubfront(0);
 
             return Result;
         }

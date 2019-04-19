@@ -362,14 +362,14 @@ namespace Algorithm_of_MO
             Logger.Log.Info("ITERATION: " + iteration);
             Console.WriteLine("ITERATION: " + iteration);
 
-            //Result = population;
+            SolutionSet Result = population;
 
             //return population;
 
             // Return the first non-dominated front
             Ranking rank = new Ranking(population);
 
-            SolutionSet Result = rank.GetSubfront(0);
+            //SolutionSet Result = rank.GetSubfront(0);
 
             return Result;
         }
