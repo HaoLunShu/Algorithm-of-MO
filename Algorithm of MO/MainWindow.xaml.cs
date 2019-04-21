@@ -138,7 +138,7 @@ namespace Algorithm_of_MO
         public void calculateStatistics(string filepath, string algorithm, int numbers)
         {
             string p = filepath + "/" + algorithm + "new";
-            string[] s = { "Time", "Hypervolume", "GD", "IGD", "Spread" , "Epsilon", "Speed" };
+            string[] s = { "Time:", "Hypervolume", "GD", "IGD", "Spread" , "Epsilon", "Speed" };
             double[] allParameters = new double[s.Length];
             int[] T = new int[numbers];
             double[,] QI = new double[5, numbers];
@@ -148,50 +148,52 @@ namespace Algorithm_of_MO
             for(int i = 1; i <= numbers; i++)
             {
                 string text = System.IO.File.ReadAllText(p + i + ".txt");
-                    bool bt = text.Contains(s[0]);
-                    if (bt)
+                string text1;
+                System.IO.StreamReader sr = new System.IO.StreamReader(p + i + ".txt");
+                int t = 0;
+                while ((text1 = sr.ReadLine()) != null)
+                {
+                    string[] words = text1.Split(' ');
+                    if (words[0] == s[0])
                     {
-                        int indextime = text.IndexOf(s[0]);
-                        if (indextime >= 0)
-                        {
-                            string time = text.Substring(indextime + 6, 4);
-                            int t = Int32.Parse(time);
-                            T[flag] = t;
-                            allParameters[0] = allParameters[0] + t;
-                        }
+                        t = int.Parse(words[1]);
+                        break;
                     }
+                }
+                T[flag] = t;
+                allParameters[0] = allParameters[0] + t;
 
-                    bool[] b = new bool[s.Length];
-                    string[] d = new string[s.Length];
-                    double[] para = new double[s.Length];
-                    for (int j = 1; j < s.Length - 1; j++)
+                bool[] b = new bool[s.Length];
+                string[] d = new string[s.Length];
+                double[] para = new double[s.Length];
+                for (int j = 1; j < s.Length - 1; j++)
+                {
+                    b[j] = text.Contains(s[j]);
+                    if (b[j])
                     {
-                        b[j] = text.Contains(s[j]);
-                        if (b[j])
+                        int index = text.IndexOf(s[j]);
+                        if (index >= 0)
                         {
-                            int index = text.IndexOf(s[j]);
-                            if (index >= 0)
-                            {
-                                d[j] = text.Substring(index + 13, 20);
-                                para[j] = double.Parse(d[j]);
-                                QI[j-1, flag] = para[j];
-                                allParameters[j] = allParameters[j] + para[j];
-                            }
+                            d[j] = text.Substring(index + 13, 20);
+                            para[j] = double.Parse(d[j]);
+                            QI[j-1, flag] = para[j];
+                            allParameters[j] = allParameters[j] + para[j];
                         }
                     }
+                }
 
-                    bool bs = text.Contains(s[6]);
-                    if (bs)
+                bool bs = text.Contains(s[6]);
+                if (bs)
+                {
+                    int indexspeed = text.IndexOf(s[6]);
+                    if (indexspeed >= 0)
                     {
-                        int indexspeed = text.IndexOf(s[6]);
-                        if (indexspeed >= 0)
-                        {
-                            string speed = text.Substring(indexspeed + 13, 5);
-                            int sp = Int32.Parse(speed);
-                            spe[flag] = sp;
-                            allParameters[6] = allParameters[6] + sp;
-                        }
+                        string speed = text.Substring(indexspeed + 13, 5);
+                        int sp = Int32.Parse(speed);
+                        spe[flag] = sp;
+                        allParameters[6] = allParameters[6] + sp;
                     }
+                }
 
                 flag++;
 
