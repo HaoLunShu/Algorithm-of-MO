@@ -134,7 +134,7 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
             pro_T = GerPro(t);
             pro_A = GerPro(populationSize);
 
-            /*string dir = "Result/MOEAD_ACOR/ZDT4_Real/Record/Replace/3nd_Dynamic2_nr16";
+            /**/string dir = "Result/MOEAD_DifferentialEvolutionCrossover/LZ09_F2_Real/Record";
             if (Directory.Exists(dir))
             {
                 Console.WriteLine("The directory {0} already exists.", dir);
@@ -143,7 +143,7 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
             {
                 Directory.CreateDirectory(dir);
                 Console.WriteLine("The directory {0} was created.", dir);
-            }*/
+            }
 
             //Step 1. Initialization
             //Step 1.1 Compute euclidean distances between weight vectors and find T
@@ -338,10 +338,10 @@ namespace JMetalCSharp.Metaheuristics.MOEAD
                     }
                 }
 
-                /*string filevar = dir + "/VAR" + iteration;
+                /**/string filevar = dir + "/VAR" + iteration;
                 string filefun = dir + "/FUN" + iteration;
                 population.PrintVariablesToFile(filevar);
-                population.PrintObjectivesToFile(filefun);*/
+                population.PrintObjectivesToFile(filefun);
 
                 iteration++;
 

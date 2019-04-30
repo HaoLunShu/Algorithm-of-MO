@@ -57,7 +57,7 @@ namespace Algorithm_of_MO
             fileRead.fileread();
             problem = fileRead.GetProblem();
             algorithm = fileRead.GetAlgorithm();
-            crossover = fileRead.GetCrossover();
+            //crossover = fileRead.GetCrossover();
             mutation = fileRead.GetMutation();
             selection = fileRead.GetSelection();
 
@@ -138,7 +138,7 @@ namespace Algorithm_of_MO
         public void calculateStatistics(string filepath, string algorithm, int numbers)
         {
             string p = filepath + "/" + algorithm + "new";
-            string[] s = { "Time:", "Hypervolume", "GD", "IGD", "Spread" , "Epsilon", "Speed" };
+            string[] s = { "Time", "Hypervolume", "GD", "IGD", "Spread" , "Epsilon", "Speed" };
             double[] allParameters = new double[s.Length];
             int[] T = new int[numbers];
             double[,] QI = new double[5, numbers];
@@ -154,7 +154,7 @@ namespace Algorithm_of_MO
                 while ((text1 = sr.ReadLine()) != null)
                 {
                     string[] words = text1.Split(' ');
-                    if (words[0] == s[0])
+                    if (words[0] == "Time:")
                     {
                         t = int.Parse(words[1]);
                         break;
@@ -423,9 +423,9 @@ namespace Algorithm_of_MO
             FileRead file = new FileRead();
             file.fileread();
             if (file.Co2 != "")
-                calculateStatistics("Result/" + file.Al + "_" + file.Co + "_" + file.Co2 + "/" + file.Pb + "_" + file.St, file.Al, int.Parse(file.Rt));
+                calculateStatistics(file.DirPath, file.Al, int.Parse(file.Rt));
             else
-                calculateStatistics("Result/" + file.Al + "_" + file.Co + "/" + file.Pb + "_" + file.St, file.Al, int.Parse(file.Rt));
+                calculateStatistics(file.DirPath, file.Al, int.Parse(file.Rt));
         }
 
         private void Button_Click_2(object sender, RoutedEventArgs e)

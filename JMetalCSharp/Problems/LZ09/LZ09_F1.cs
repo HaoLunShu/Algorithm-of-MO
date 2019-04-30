@@ -38,7 +38,7 @@ namespace JMetalCSharp.Problems.LZ09
 		/// <param name="ltype"></param>
 		public LZ09_F1(string solutionType, int ptype, int dtype, int ltype)
 		{
-			NumberOfVariables = 10;
+			NumberOfVariables = 30;
 			NumberOfObjectives = 2;
 			NumberOfConstraints = 0;
 			ProblemName = "LZ09_F1";

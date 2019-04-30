@@ -21,8 +21,7 @@ namespace Algorithm_of_MO
     {
         Problem problem = null; // The problem to solve
         Algorithm algorithm = null; // The algorithm to use
-        Operator crossover = null; // Crossover operator
-        Operator crossover2 = null; // Crossover operator
+        Operator[] crossover = new Operator[3]; // Crossover operator
         Operator mutation = null; // Mutation operator
         Operator selection = null; // Selection operator
 
@@ -40,7 +39,10 @@ namespace Algorithm_of_MO
         public string Nr { get; private set; } = "";
         public string Co { get; set; } = "";
         public string Co2 { get; set; } = "";
-        public string Ra { get; set; } = "";
+        public string Co3 { get; set; } = "";
+        public string DERa { get; set; } = "";
+        public string SBXRa { get; set; } = "";
+        public string ACORa { get; set; } = "";
         string poc = "";
         string dioc = "";
         string cr = "";
@@ -96,8 +98,14 @@ namespace Algorithm_of_MO
                 Co = setting["Crossover"];
             if (true == setting.ContainsKey("Crossover2"))
                 Co2 = setting["Crossover2"];
-            if (true == setting.ContainsKey("Ratio"))
-                Ra = setting["Ratio"];
+            if (true == setting.ContainsKey("Crossover3"))
+                Co3 = setting["Crossover3"];
+            if (true == setting.ContainsKey("DERatio"))
+                DERa = setting["DERatio"];
+            if (true == setting.ContainsKey("SBXRatio"))
+                SBXRa = setting["SBXRatio"];
+            if (true == setting.ContainsKey("ACORatio"))
+                ACORa = setting["ACORatio"];
             if (true == setting.ContainsKey("probabilityOfCrossover"))
                 poc = setting["probabilityOfCrossover"];
             if (true == setting.ContainsKey("distributionIndexOfCrossover"))
@@ -126,6 +134,24 @@ namespace Algorithm_of_MO
                 Qi = setting["QualityIndicator"];
             if (true == setting.ContainsKey("repeatTimes"))
                 Rt = setting["repeatTimes"];
+
+            DirPath = "Result/" + Al;
+            if (DERa != "0")
+                DirPath = DirPath + "_DifferentialEvolutionCrossover";
+            if (SBXRa != "0")
+                DirPath = DirPath + "_SBXCrossover";
+            if (ACORa != "0")
+                DirPath = DirPath + "_ACOR";
+            DirPath = DirPath + "/" + Pb + "_" + St;
+            if (Directory.Exists(DirPath))
+            {
+                Console.WriteLine("The directory {0} already exists.", DirPath);
+            }
+            else
+            {
+                Directory.CreateDirectory(DirPath);
+                Console.WriteLine("The directory {0} was created.", DirPath);
+            }
         }
 
         public Problem GetProblem()
@@ -216,20 +242,6 @@ namespace Algorithm_of_MO
 
         public Algorithm GetAlgorithm()
         {
-            if(Co2 != "")
-                DirPath = "Result/" + Al + "_" + Co + "_" + Co2 + "/" + Pb + "_" + St;
-            else
-                DirPath = "Result/" + Al + "_" + Co + "/" + Pb + "_" + St;
-            if (Directory.Exists(DirPath))
-            {
-                Console.WriteLine("The directory {0} already exists.", DirPath);
-            }
-            else
-            {
-                Directory.CreateDirectory(DirPath);
-                Console.WriteLine("The directory {0} was created.", DirPath);
-            }
-
             string filepath = DirPath + "/Parameter.txt";
             string[] line1 = { "numberOfVariables " + nov, "numberOfObjectives " + noo, "populationSize " + Ps, "iterationsNumber " + Itn };
             string[] line2 = { "T " + T, "delta " + Delta, "nr " + Nr };
@@ -259,121 +271,41 @@ namespace Algorithm_of_MO
             return algorithm;
         }
 
-        public Operator GetCrossover()
+        public Operator[] GetCrossover()
         {
-            if (Co2 != "")
-                DirPath = "Result/" + Al + "_" + Co + "_" + Co2 + "/" + Pb + "_" + St;
-            else
-                DirPath = "Result/" + Al + "_" + Co + "/" + Pb + "_" + St;
-            if (Directory.Exists(DirPath))
-            {
-                Console.WriteLine("The directory {0} already exists.", DirPath);
-            }
-            else
-            {
-                Directory.CreateDirectory(DirPath);
-                Console.WriteLine("The directory {0} was created.", DirPath);
-            }
-
             string filepath = DirPath + "/Parameter.txt";
             string[] line3 = { "probabilityOfCrossover " + poc, "distributionIndexOfCrossover " + dioc };
             string[] line4 = { "CR " + cr, "F " + f, "K " + k };
             string[] line5 = { "zeta " + zeta, "q " + q };
 
-            Dictionary<string, object>  parameters = new Dictionary<string, object>();
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            
+            parameters.Add("probability", double.Parse(poc));
+            parameters.Add("distributionIndex", double.Parse(dioc));
+            crossover[1] = CrossoverFactory.GetCrossoverOperator("SBXCrossover", parameters);
+            
+            parameters = new Dictionary<string, object>();
+            parameters.Add("CR", double.Parse(cr));
+            parameters.Add("F", double.Parse(f));
+            parameters.Add("K", double.Parse(k));
+            crossover[0] = CrossoverFactory.GetCrossoverOperator("DifferentialEvolutionCrossover", parameters);
+            
+            parameters = new Dictionary<string, object>();
+            parameters.Add("zeta", double.Parse(zeta));
+            crossover[2] = CrossoverFactory.GetCrossoverOperator("ACOR", parameters);
 
-            switch (Co)
-            {
-                case "SBXCrossover":
-                    parameters.Add("probability", double.Parse(poc));
-                    parameters.Add("distributionIndex", double.Parse(dioc));
-                    crossover = CrossoverFactory.GetCrossoverOperator("SBXCrossover", parameters);
-                    File.AppendAllLines(filepath, line3);
-                    break;
-                case "DifferentialEvolutionCrossover":
-                    parameters.Add("CR", double.Parse(cr));
-                    parameters.Add("F", double.Parse(f));
-                    parameters.Add("K", double.Parse(k));
-                    crossover = CrossoverFactory.GetCrossoverOperator("DifferentialEvolutionCrossover", parameters);
-                    File.AppendAllLines(filepath, line4);
-                    break;
-                case "ACOR":
-                    parameters.Add("zeta", double.Parse(zeta));
-                    crossover = CrossoverFactory.GetCrossoverOperator("ACOR", parameters);
-                    File.AppendAllLines(filepath, line5);
-                    break;
-                case null:
-                    parameters.Add("probability", double.Parse(poc));
-                    parameters.Add("distributionIndex", double.Parse(dioc));
-                    parameters.Add("zeta", double.Parse(zeta));
-                    crossover = CrossoverFactory.GetCrossoverOperator("null", parameters);
-                    File.AppendAllLines(filepath, line3);
-                    File.AppendAllLines(filepath, line5);
-                    break;
-                default:
-                    break;
-            }
+            if (DERa != "0.0")
+                File.AppendAllLines(filepath, line4);
+            if (SBXRa != "0.0")
+                File.AppendAllLines(filepath, line3);
+            if (ACORa != "0.0")
+                File.AppendAllLines(filepath, line5);
 
             return crossover;
         }
 
-        public Operator GetCrossover2()
-        {
-            string filepath = DirPath + "/Parameter.txt";
-
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
-
-            string[] line7 = { Co + " " + Ra, Co2 + " " + (1 - double.Parse(Ra)) };
-            string[] line8 = { "gamma " + Gamma };
-            File.AppendAllLines(filepath, line7);
-            File.AppendAllLines(filepath, line8);
-
-            switch (Co2)
-            {
-                case "SBXCrossover":
-                    parameters.Add("probability", double.Parse(poc));
-                    parameters.Add("distributionIndex", double.Parse(dioc));
-                    crossover2 = CrossoverFactory.GetCrossoverOperator("SBXCrossover", parameters);
-                    break;
-                case "DifferentialEvolutionCrossover":
-                    parameters.Add("CR", double.Parse(cr));
-                    parameters.Add("F", double.Parse(f));
-                    parameters.Add("K", double.Parse(k));
-                    crossover2 = CrossoverFactory.GetCrossoverOperator("DifferentialEvolutionCrossover", parameters);
-                    break;
-                case "ACOR":
-                    parameters.Add("zeta", double.Parse(zeta));
-                    crossover2 = CrossoverFactory.GetCrossoverOperator("ACOR", parameters);
-                    break;
-                case null:
-                    parameters.Add("probability", double.Parse(poc));
-                    parameters.Add("distributionIndex", double.Parse(dioc));
-                    parameters.Add("zeta", double.Parse(zeta));
-                    crossover2 = CrossoverFactory.GetCrossoverOperator("null", parameters);
-                    break;
-                default:
-                    break;
-            }
-
-            return crossover2;
-        }
-
         public Operator GetMutation()
         {
-            if (Co2 != "")
-                DirPath = "Result/" + Al + "_" + Co + "_" + Co2 + "/" + Pb + "_" + St;
-            else
-                DirPath = "Result/" + Al + "_" + Co + "/" + Pb + "_" + St;
-            if (Directory.Exists(DirPath))
-            {
-                Console.WriteLine("The directory {0} already exists.", DirPath);
-            }
-            else
-            {
-                Directory.CreateDirectory(DirPath);
-                Console.WriteLine("The directory {0} was created.", DirPath);
-            }
-
             string filepath = DirPath + "/Parameter.txt";
             string[] line6 = { "probabilityOfMutation " + 1.0 / problem.NumberOfVariables, "distributionIndexOfMutation " + diom, "" };
 
@@ -394,12 +326,6 @@ namespace Algorithm_of_MO
                     parameters.Add("probability", 1.0);
                     parameters.Add("distributionIndex", double.Parse(diom));
                     mutation = MutationFactory.GetMutationOperator("DynamicPolynomialMutation", parameters);
-                    File.AppendAllLines(filepath, line6);
-                    break;
-                case "BoxMuller":
-                    parameters.Add("zeta", double.Parse(zeta));
-                    parameters.Add("probability", 1.0 / problem.NumberOfVariables);
-                    crossover = MutationFactory.GetMutationOperator("BoxMuller", parameters);
                     File.AppendAllLines(filepath, line6);
                     break;
                 case null:

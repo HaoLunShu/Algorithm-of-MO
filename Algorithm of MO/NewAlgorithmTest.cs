@@ -83,8 +83,7 @@ namespace Algorithm_of_MO
         private int iterationsNumber;
         private int iteration;
 
-        private Operator crossover1;
-        private Operator crossover2;
+        private Operator[] crossover = new Operator[3];
         private Operator mutation;
 
         private string dataDirectory;
@@ -97,8 +96,7 @@ namespace Algorithm_of_MO
             fileRead.fileread();
             problem = fileRead.GetProblem();
 
-            crossover1 = fileRead.GetCrossover();
-            crossover2 = fileRead.GetCrossover2();
+            crossover = fileRead.GetCrossover();
             mutation = fileRead.GetMutation();
         }
 
@@ -116,7 +114,12 @@ namespace Algorithm_of_MO
             populationSize = int.Parse(fileRead.Ps);
             iterationsNumber = int.Parse(fileRead.Itn);
             dataDirectory = "Data/Parameters/Weight";
-            
+
+            int allR = int.Parse(fileRead.DERa) + int.Parse(fileRead.SBXRa) + int.Parse(fileRead.ACORa);
+            double ACOR = (double) int.Parse(fileRead.ACORa) / allR;
+            double DER = (double) int.Parse(fileRead.DERa) / allR;
+
+
 
             Logger.Log.Info("POPSIZE: " + populationSize);
             Console.WriteLine("POPSIZE: " + populationSize);
@@ -144,7 +147,14 @@ namespace Algorithm_of_MO
                 lambda[i] = new double[problem.NumberOfObjectives];
             }
 
-            /*string dir = "Result/" + fileRead.Al + "_" + fileRead.Co + "_" + fileRead.Co2 + "/" + fileRead.Pb + "_" + fileRead.St + "/Record/SBX(" + double.Parse(fileRead.Ra).ToString("#0.00") + ")+ACOR(" + (1-double.Parse(fileRead.Ra)).ToString("#0.00") + ")";
+            /**/string dir = "Result/" + fileRead.Al;
+            if (fileRead.DERa != "0")
+                dir = dir + "_DifferentialEvolutionCrossover";
+            if (fileRead.SBXRa != "0")
+                dir = dir + "_SBXCrossover";
+            if (fileRead.ACORa != "0")
+                dir = dir + "_ACOR";
+            dir = dir + "/" + fileRead.Pb + "_" + fileRead.St + "/Record/DE(" + int.Parse(fileRead.DERa) + ")+SBX(" + int.Parse(fileRead.SBXRa) + ")+ACOR(" + int.Parse(fileRead.ACORa) + ")/nr=" + fileRead.Nr;
             if (Directory.Exists(dir))
             {
                 Console.WriteLine("The directory {0} already exists.", dir);
@@ -153,7 +163,7 @@ namespace Algorithm_of_MO
             {
                 Directory.CreateDirectory(dir);
                 Console.WriteLine("The directory {0} was created.", dir);
-            }*/
+            }
 
             //Step 1. Initialization
             //Step 1.1 Compute euclidean distances between weight vectors and find T
@@ -176,8 +186,9 @@ namespace Algorithm_of_MO
                 Solution[] parents = new Solution[2];
                 int t = 0;
 
-                if(a >= double.Parse(fileRead.Ra) * iterationsNumber)
+                if(a >= (1 - ACOR) * iterationsNumber)
                 {
+                    //ACOR
                     for (int i = 0; i < populationSize; i++)
                     {
 
@@ -213,7 +224,7 @@ namespace Algorithm_of_MO
                         //parents[0] = population.Get(p[0]);
 
                         // Apply ACOR crossover 
-                        child = (Solution)crossover2.Execute(parents);
+                        child = (Solution)crossover[2].Execute(parents);
 
                         child.NumberofReplace = t;
 
@@ -234,9 +245,61 @@ namespace Algorithm_of_MO
                         t = UpdateProblemWithReplace(child, n, 1);
                     }
                 }
+                else if(a <= DER * iterationsNumber)
+                {
+                    //DE
+                    for (int i = 0; i < populationSize; i++)
+                    {
+                        int n = permutation[i]; // or int n = i;
+
+                        int type;
+                        double rnd = JMetalRandom.NextDouble();
+
+                        // STEP 2.1. Mating selection based on probability
+                        if (rnd < delta) // if (rnd < realb)    
+                        {
+                            type = 1;   // neighborhood
+                        }
+                        else
+                        {
+                            type = 2;   // whole population
+                        }
+                        List<int> p = new List<int>();
+                        MatingSelection(p, n, 2, type);
+
+                        // STEP 2.2. Reproduction
+                        Solution child;
+                        Solution[] parent = new Solution[3];
+
+                        parent[0] = population.Get(p[0]);
+                        parent[1] = population.Get(p[1]);
+
+                        parent[2] = population.Get(n);
+
+                        // Apply DE crossover 
+                        child = (Solution)crossover[0].Execute(new object[] { population.Get(n), parent });
+
+                        // Apply mutation
+                        mutation.Execute(child);
+
+                        // Evaluation
+                        problem.Evaluate(child);
+
+                        evaluations++;
+
+                        // STEP 2.3. Repair. Not necessary
+
+                        // STEP 2.4. Update z_
+                        UpdateReference(child);
+
+                        // STEP 2.5. Update of solutions
+                        UpdateProblem(child, n, type);
+                    }
+                }
                 else
                 {
-                    // Create the offSpring solutionSet      
+                    //SBX
+                    //Create the offSpring solutionSet
                     SolutionSet offspringPopulation = new SolutionSet(populationSize);
                     for (int i = 0; i < (populationSize / 2); i++)
                     {
@@ -261,7 +324,7 @@ namespace Algorithm_of_MO
                         parents[1] = population.Get(p[1]);
 
                         //obtain parents
-                        Solution[] offSpring = (Solution[])crossover1.Execute(parents);
+                        Solution[] offSpring = (Solution[])crossover[1].Execute(parents);
                         //Solution child;
                         mutation.Execute(offSpring[0]);
                         mutation.Execute(offSpring[1]);
@@ -291,60 +354,12 @@ namespace Algorithm_of_MO
                         UpdateProblem(offSpring[0], n, type);
                         UpdateProblem(offSpring[1], n, type);
                     }
-
-                    //for (int i = 0; i < populationSize; i++)
-                    //{
-                    //    int n = permutation[i]; // or int n = i;
-
-                    //    int type;
-                    //    double rnd = JMetalRandom.NextDouble();
-
-                    //    // STEP 2.1. Mating selection based on probability
-                    //    if (rnd < delta) // if (rnd < realb)    
-                    //    {
-                    //        type = 1;   // neighborhood
-                    //    }
-                    //    else
-                    //    {
-                    //        type = 2;   // whole population
-                    //    }
-                    //    List<int> p = new List<int>();
-                    //    MatingSelection(p, n, 2, type);
-
-                    //    // STEP 2.2. Reproduction
-                    //    Solution child;
-                    //    Solution[] parent = new Solution[3];
-
-                    //    parent[0] = population.Get(p[0]);
-                    //    parent[1] = population.Get(p[1]);
-
-                    //    parent[2] = population.Get(n);
-
-                    //    // Apply DE crossover 
-                    //    child = (Solution)crossover1.Execute(new object[] { population.Get(n), parent });
-
-                    //    // Apply mutation
-                    //    mutation.Execute(child);
-
-                    //    // Evaluation
-                    //    problem.Evaluate(child);
-
-                    //    evaluations++;
-
-                    //    // STEP 2.3. Repair. Not necessary
-
-                    //    // STEP 2.4. Update z_
-                    //    UpdateReference(child);
-
-                    //    // STEP 2.5. Update of solutions
-                    //    UpdateProblem(child, n, type);
-                    //}
                 }
 
-                /*string filevar = dir + "/VAR" + iteration;
+                /**/string filevar = dir + "/VAR" + iteration;
                 string filefun = dir + "/FUN" + iteration;
                 population.PrintVariablesToFile(filevar);
-                population.PrintObjectivesToFile(filefun);*/
+                population.PrintObjectivesToFile(filefun);
 
                 iteration++;
 
