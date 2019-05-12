@@ -154,7 +154,7 @@ namespace Algorithm_of_MO
                 dir = dir + "_SBXCrossover";
             if (fileRead.ACORa != "0")
                 dir = dir + "_ACOR";
-            dir = dir + "/" + fileRead.Pb + "_" + fileRead.St + "/Record/DE(" + int.Parse(fileRead.DERa) + ")+SBX(" + int.Parse(fileRead.SBXRa) + ")+ACOR(" + int.Parse(fileRead.ACORa) + ")/nr=" + fileRead.Nr;
+            dir = dir + "/" + fileRead.Pb + "_" + fileRead.St + "/Record/DE(" + int.Parse(fileRead.DERa) + ")+SBX(" + int.Parse(fileRead.SBXRa) + ")+ACOR(" + int.Parse(fileRead.ACORa) + ")_NoMutation/nr=" + fileRead.Nr + "/ACOR+SBX";
             if (Directory.Exists(dir))
             {
                 Console.WriteLine("The directory {0} already exists.", dir);
@@ -178,7 +178,7 @@ namespace Algorithm_of_MO
             InitIdealPoint();
 
             //Step 2 Update
-            for(int a = 0; a < iterationsNumber; a++)
+            for(int a = 1; a <= iterationsNumber; a++)
             {
                 int[] permutation = new int[populationSize];
                 JMetalCSharp.Metaheuristics.MOEAD.Utils.RandomPermutation(permutation, populationSize);
@@ -186,7 +186,7 @@ namespace Algorithm_of_MO
                 Solution[] parents = new Solution[2];
                 int t = 0;
 
-                if(a >= (1 - ACOR) * iterationsNumber)
+                if(a <= (ACOR) * iterationsNumber)
                 {
                     //ACOR
                     for (int i = 0; i < populationSize; i++)
@@ -228,8 +228,8 @@ namespace Algorithm_of_MO
 
                         child.NumberofReplace = t;
 
-                        // // Apply mutation
-                        mutation.Execute(child);
+                        // Apply mutation
+                        // mutation.Execute(child);
 
                         // Evaluation
                         problem.Evaluate(child);
@@ -245,7 +245,7 @@ namespace Algorithm_of_MO
                         t = UpdateProblemWithReplace(child, n, 1);
                     }
                 }
-                else if(a <= DER * iterationsNumber)
+                else if(a >= (1 - DER) * iterationsNumber)
                 {
                     //DE
                     for (int i = 0; i < populationSize; i++)

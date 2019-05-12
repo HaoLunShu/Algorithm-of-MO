@@ -274,6 +274,7 @@ namespace Algorithm_of_MO
         public Operator[] GetCrossover()
         {
             string filepath = DirPath + "/Parameter.txt";
+            string[] line6 = { "ACOR " + ACORa, "SBXCrossover " + SBXRa, "DECrossover " + DERa };
             string[] line3 = { "probabilityOfCrossover " + poc, "distributionIndexOfCrossover " + dioc };
             string[] line4 = { "CR " + cr, "F " + f, "K " + k };
             string[] line5 = { "zeta " + zeta, "q " + q };
@@ -294,6 +295,7 @@ namespace Algorithm_of_MO
             parameters.Add("zeta", double.Parse(zeta));
             crossover[2] = CrossoverFactory.GetCrossoverOperator("ACOR", parameters);
 
+            File.AppendAllLines(filepath, line6);
             if (DERa != "0.0")
                 File.AppendAllLines(filepath, line4);
             if (SBXRa != "0.0")
