@@ -1,22 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using JMetalCSharp;
 using JMetalCSharp.Core;
-using JMetalCSharp.Encoding.SolutionType;
 using JMetalCSharp.Utils;
 using JMetalCSharp.Utils.Wrapper;
-using JMetalCSharp.Operators.Crossover;
-using JMetalCSharp.Operators.Mutation;
-using JMetalCSharp.Operators.Selection;
-using JMetalCSharp.Problems;
-using JMetalCSharp.Problems.DTLZ;
-using JMetalCSharp.Problems.ZDT;
-using JMetalCSharp.Problems.LZ09;
 using JMetalCSharp.QualityIndicator;
-using JMetalCSharp.Metaheuristics.MOEAD;
 using System.IO;
 
 namespace Algorithm_of_MO
@@ -90,6 +78,8 @@ namespace Algorithm_of_MO
 
         #endregion
 
+        #region Constructors
+
         public NewAlgorithmTest()
         {
             fileRead = new FileRead();
@@ -99,6 +89,8 @@ namespace Algorithm_of_MO
             crossover = fileRead.GetCrossover();
             mutation = fileRead.GetMutation();
         }
+
+        #endregion
 
         #region Main Functions
 

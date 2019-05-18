@@ -2,32 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Data.Objects;
-using JMetalCSharp;
 using JMetalCSharp.Core;
-using JMetalCSharp.Operators.Crossover;
-using JMetalCSharp.Operators.Mutation;
-using JMetalCSharp.Operators.Selection;
-using JMetalCSharp.Problems;
-using JMetalCSharp.Problems.DTLZ;
-using JMetalCSharp.Problems.ZDT;
-using JMetalCSharp.Problems.LZ09;
 using JMetalCSharp.QualityIndicator;
 using JMetalCSharp.Utils;
-using JMetalCSharp.Problems.Kursawe;
-using JMetalCSharp.Problems.Schaffer;
-using JMetalCSharp.Problems.Fonseca;
 
 namespace Algorithm_of_MO
 {
@@ -36,12 +14,16 @@ namespace Algorithm_of_MO
     /// </summary>
     public partial class MainWindow : Window
     {
+        #region Constructor
+
         public MainWindow()
         {
             InitializeComponent();
         }
 
-        Dictionary<string, string> setting = new Dictionary<string, string>();
+        #endregion
+
+        #region Main Function
 
         public void MyAlgorithm()
         {
@@ -132,6 +114,8 @@ namespace Algorithm_of_MO
                 algorithm.AddOperator("mutation", mutation);
             }
         }
+
+        #endregion
 
         #region Methods
 
@@ -240,7 +224,7 @@ namespace Algorithm_of_MO
                 gd[l] = Q[1, l];
                 igd[l] = Q[2, l];
                 spr[l] = Q[3, l];
-                eps[l] = Q[4, 1];
+                eps[l] = Q[4, l];
 
             }
 
@@ -286,7 +270,7 @@ namespace Algorithm_of_MO
                 gd[l] = Q[1, l];
                 igd[l] = Q[2, l];
                 spr[l] = Q[3, l];
-                eps[l] = Q[4, 1];
+                eps[l] = Q[4, l];
 
             }
 

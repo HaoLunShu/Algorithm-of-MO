@@ -11,14 +11,13 @@ using JMetalCSharp.Problems.ZDT;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Algorithm_of_MO
 {
     class FileRead
     {
+        #region Variable
+
         Problem problem = null; // The problem to solve
         Algorithm algorithm = null; // The algorithm to use
         Operator[] crossover = new Operator[3]; // Crossover operator
@@ -57,6 +56,10 @@ namespace Algorithm_of_MO
         public string Qi { get; private set; } = "";
         public string Rt { get; private set; } = "";
         public string DirPath { get; private set; } = "";
+
+        #endregion
+
+        #region Read
 
         public void fileread()
         {
@@ -153,6 +156,10 @@ namespace Algorithm_of_MO
                 Console.WriteLine("The directory {0} was created.", DirPath);
             }
         }
+
+        #endregion
+
+        #region Information
 
         public Problem GetProblem()
         {
@@ -355,5 +362,7 @@ namespace Algorithm_of_MO
 
             return selection;
         }
+
+        #endregion
     }
 }
